@@ -1,0 +1,30 @@
+{
+  "name": "horse-info-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HorseInfo Backend API with Strapi",
+  "scripts": {
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.0",
+    "@strapi/plugin-users-permissions": "5.50.2",
+    "@strapi/strapi": "5.50.2",
+    "dayjs": "^1.11.10",
+    "pg": "^8.11.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.22.3",
+    "strapi-plugin-populate-deep": "^3.0.1",
+    "styled-components": "^6.4.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

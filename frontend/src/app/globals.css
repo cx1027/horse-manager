@@ -1,0 +1,283 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background-primary text-text-primary font-sans antialiased;
+    background: #121212;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    @apply bg-accent/30 text-white;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background-secondary;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-text-muted rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-text-secondary;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-background-card rounded-card border border-border p-6 shadow-card;
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .card:hover {
+    @apply border-border-hover shadow-lg;
+    transform: translateY(-2px);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-button font-medium;
+    @apply transition-all duration-200 ease-out;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background-primary;
+  }
+
+  .btn-primary {
+    @apply btn bg-accent text-white;
+    @apply hover:bg-accent-hover active:scale-95 focus:ring-accent;
+  }
+
+  .btn-secondary {
+    @apply btn bg-background-card text-text-primary border border-border;
+    @apply hover:border-border-hover hover:bg-background-secondary;
+    @apply focus:ring-border;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-text-secondary;
+    @apply hover:bg-background-card hover:text-text-primary;
+  }
+
+  .btn-danger {
+    @apply btn bg-error text-white;
+    @apply hover:bg-red-600 active:scale-95 focus:ring-error;
+  }
+
+  .btn-sm {
+    @apply px-4 py-2 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-8 py-4 text-lg;
+  }
+
+  .input {
+    @apply w-full px-4 py-3 bg-background-secondary rounded-input border border-border;
+    @apply text-text-primary placeholder:text-text-muted;
+    @apply transition-all duration-200;
+    @apply focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent;
+  }
+
+  .input-error {
+    @apply border-error focus:border-error focus:ring-error;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-text-secondary mb-2;
+  }
+
+  .error-text {
+    @apply text-sm text-error mt-1;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply badge bg-accent/20 text-accent;
+  }
+
+  .badge-success {
+    @apply badge bg-success/20 text-success;
+  }
+
+  .badge-warning {
+    @apply badge bg-warning/20 text-warning;
+  }
+
+  .badge-error {
+    @apply badge bg-error/20 text-error;
+  }
+
+  .badge-secondary {
+    @apply badge bg-text-muted/20 text-text-secondary;
+  }
+
+  .heading-1 {
+    @apply text-4xl font-bold text-text-primary;
+  }
+
+  .heading-2 {
+    @apply text-3xl font-bold text-text-primary;
+  }
+
+  .heading-3 {
+    @apply text-2xl font-semibold text-text-primary;
+  }
+
+  .heading-4 {
+    @apply text-xl font-semibold text-text-primary;
+  }
+
+  .text-body {
+    @apply text-base text-text-primary;
+  }
+
+  .text-small {
+    @apply text-sm text-text-secondary;
+  }
+
+  .stat-card {
+    @apply card flex flex-col gap-2;
+  }
+
+  .stat-value {
+    @apply text-3xl font-bold text-text-primary;
+  }
+
+  .stat-label {
+    @apply text-sm text-text-secondary;
+  }
+
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+  }
+
+  .section-title {
+    @apply text-xl font-semibold text-text-primary mb-4;
+  }
+
+  .grid-cards {
+    @apply grid gap-6;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-12 text-center;
+  }
+
+  .empty-state-icon {
+    @apply w-16 h-16 text-text-muted mb-4;
+  }
+
+  .empty-state-title {
+    @apply text-xl font-medium text-text-primary mb-2;
+  }
+
+  .empty-state-description {
+    @apply text-text-secondary max-w-md;
+  }
+
+  .loading-spinner {
+    @apply animate-spin rounded-full border-2 border-text-muted border-t-accent;
+  }
+
+  .skeleton {
+    @apply animate-pulse bg-background-secondary rounded;
+  }
+
+  .divider {
+    @apply border-t border-border my-6;
+  }
+
+  .overlay {
+    @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-40;
+  }
+
+  .modal {
+    @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+    @apply bg-background-card rounded-card border border-border p-6;
+    @apply shadow-xl z-50 max-w-lg w-full max-h-[90vh] overflow-auto;
+  }
+
+  .tab {
+    @apply px-4 py-2 text-text-secondary font-medium;
+    @apply border-b-2 border-transparent;
+    @apply transition-all duration-200;
+    @apply hover:text-text-primary;
+  }
+
+  .tab-active {
+    @apply tab text-accent border-accent;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full;
+    @apply bg-background-secondary text-text-secondary text-sm;
+    @apply transition-colors duration-200;
+    @apply hover:bg-background-card hover:text-text-primary;
+  }
+
+  .avatar {
+    @apply rounded-full overflow-hidden bg-background-secondary;
+    @apply flex items-center justify-center font-medium text-text-secondary;
+  }
+
+  .avatar-sm {
+    @apply avatar w-8 h-8 text-xs;
+  }
+
+  .avatar-md {
+    @apply avatar w-10 h-10 text-sm;
+  }
+
+  .avatar-lg {
+    @apply avatar w-16 h-16 text-lg;
+  }
+
+  .tooltip {
+    @apply absolute z-50 px-2 py-1 text-xs text-white bg-text-muted rounded;
+    @apply opacity-0 invisible transition-all duration-200;
+  }
+
+  .has-tooltip:hover .tooltip {
+    @apply opacity-100 visible;
+  }
+}
+
+@layer utilities {
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #E12E6D, #F472B6);
+  }
+
+  .gradient-accent {
+    background: linear-gradient(135deg, #E12E6D, #A855F7);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 20px rgba(225, 46, 109, 0.3);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #E12E6D 0%, #F472B6 100%);
+  }
+}

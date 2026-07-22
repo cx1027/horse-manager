@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "horse_health_records",
+  "info": {
+    "singularName": "health-record",
+    "pluralName": "health-records",
+    "displayName": "Health Record",
+    "description": "Horse health measurements and data"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "horse": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::horse.horse",
+      "inversedBy": "healthData"
+    },
+    "recordDate": {
+      "type": "date",
+      "required": true
+    },
+    "weight": {
+      "type": "decimal",
+      "precision": 6,
+      "scale": 2
+    },
+    "heartRate": {
+      "type": "integer",
+      "min": 0,
+      "max": 300
+    },
+    "bloodPressure": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "temperature": {
+      "type": "decimal",
+      "precision": 4,
+      "scale": 1
+    },
+    "notes": {
+      "type": "text"
+    }
+  }
+}

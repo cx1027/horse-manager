@@ -1,0 +1,24 @@
+{
+  "name": "horse-info-app",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "npm -w frontend run dev",
+    "dev:backend": "npm -w backend run develop",
+    "build": "npm -w frontend run build && npm -w backend run build",
+    "start": "npm -w frontend run start",
+    "lint": "npm -w frontend run lint && npm -w backend run lint",
+    "test": "npm -w frontend run test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

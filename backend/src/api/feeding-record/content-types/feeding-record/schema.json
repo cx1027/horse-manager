@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "feeding_records",
+  "info": {
+    "singularName": "feeding-record",
+    "pluralName": "feeding-records",
+    "displayName": "Feeding Record",
+    "description": "Horse feeding records"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "horse": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::horse.horse",
+      "inversedBy": "feedingRecords"
+    },
+    "feedDate": {
+      "type": "datetime",
+      "required": true
+    },
+    "feedType": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "quantity": {
+      "type": "decimal"
+    },
+    "unit": {
+      "type": "enumeration",
+      "enum": ["kg", "lb", "g"],
+      "default": "kg"
+    },
+    "notes": {
+      "type": "text"
+    }
+  }
+}

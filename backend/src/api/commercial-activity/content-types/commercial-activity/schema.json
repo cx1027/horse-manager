@@ -1,0 +1,56 @@
+{
+  "kind": "collectionType",
+  "collectionName": "commercial_activities",
+  "info": {
+    "singularName": "commercial-activity",
+    "pluralName": "commercial-activities",
+    "displayName": "Commercial Activity",
+    "description": "Horse commercial activities and races"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "horse": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::horse.horse",
+      "inversedBy": "commercialActivities"
+    },
+    "activityDate": {
+      "type": "date",
+      "required": true
+    },
+    "activityType": {
+      "type": "enumeration",
+      "enum": ["race", "exhibition", "sale", "breeding", "sponsorship"],
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "text"
+    },
+    "result": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "prizeMoney": {
+      "type": "decimal"
+    },
+    "buyer": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "seller": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "amount": {
+      "type": "decimal"
+    }
+  }
+}

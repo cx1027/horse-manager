@@ -1,0 +1,104 @@
+{
+  "kind": "collectionType",
+  "collectionName": "horses",
+  "info": {
+    "singularName": "horse",
+    "pluralName": "horses",
+    "displayName": "Horse",
+    "description": "Horse information and profiles"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "birthDate": {
+      "type": "date"
+    },
+    "gender": {
+      "type": "enumeration",
+      "enum": ["male", "female", "gelding"],
+      "required": true,
+      "default": "male"
+    },
+    "breed": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "color": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "microchip": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "registrationNo": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["active", "inactive", "sold", "deceased"],
+      "default": "active"
+    },
+    "stableLocation": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "coverImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "photos": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "medicalRecords": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::medical-record.medical-record",
+      "mappedBy": "horse"
+    },
+    "healthData": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::health-record.health-record",
+      "mappedBy": "horse"
+    },
+    "feedingRecords": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::feeding-record.feeding-record",
+      "mappedBy": "horse"
+    },
+    "commercialActivities": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::commercial-activity.commercial-activity",
+      "mappedBy": "horse"
+    },
+    "insurance": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::insurance.insurance",
+      "mappedBy": "horse"
+    }
+  }
+}

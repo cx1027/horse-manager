@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "medical_records",
+  "info": {
+    "singularName": "medical-record",
+    "pluralName": "medical-records",
+    "displayName": "Medical Record",
+    "description": "Horse medical records"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "horse": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::horse.horse",
+      "inversedBy": "medicalRecords"
+    },
+    "recordDate": {
+      "type": "date",
+      "required": true
+    },
+    "recordType": {
+      "type": "enumeration",
+      "enum": ["vaccination", "checkup", "illness", "deworming", "dental", "surgery"],
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "veterinarian": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "attachments": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images", "files"]
+    },
+    "nextAppointment": {
+      "type": "datetime"
+    }
+  }
+}

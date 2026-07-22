@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "notification_settings",
+  "info": {
+    "singularName": "notification-setting",
+    "pluralName": "notification-settings",
+    "displayName": "Notification Setting",
+    "description": "User notification preferences"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "notificationSetting"
+    },
+    "emailInsuranceReminder": {
+      "type": "boolean",
+      "default": true
+    },
+    "emailVaccinationReminder": {
+      "type": "boolean",
+      "default": true
+    },
+    "emailHorseStatusChange": {
+      "type": "boolean",
+      "default": true
+    },
+    "emailCommercialActivity": {
+      "type": "boolean",
+      "default": false
+    },
+    "reminderDaysBefore": {
+      "type": "json",
+      "default": [30, 7, 1]
+    }
+  }
+}
