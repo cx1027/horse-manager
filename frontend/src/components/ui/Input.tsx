@@ -1,56 +1,43 @@
-'use client';
+"use client";
 
-import React, { forwardRef } from 'react';
-import { cn } from '@/lib/utils';
+import { InputHTMLAttributes, forwardRef } from "react";
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, leftIcon, rightIcon, className, id, ...props }, ref) => {
-    const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
-
+  ({ className = "", label, error, type = "text", ...props }, ref) => {
     return (
-      <div className="w-full">
+      <div className="space-y-1.5">
         {label && (
-          <label htmlFor={inputId} className="label">
+          <label className="block text-sm font-medium text-text-primary">
             {label}
           </label>
         )}
-        <div className="relative">
-          {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">
-              {leftIcon}
-            </div>
-          )}
-          <input
-            ref={ref}
-            id={inputId}
-            className={cn(
-              'input',
-              leftIcon && 'pl-10',
-              rightIcon && 'pr-10',
-              error && 'input-error',
-              className
-            )}
-            {...props}
-          />
-          {rightIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted">
-              {rightIcon}
-            </div>
-          )}
-        </div>
-        {error && <p className="error-text">{error}</p>}
+        <input
+          ref={ref}
+          type={type}
+          className={`
+            w-full rounded-full border border-border bg-surface px-4 py-3 
+            text-sm text-text-primary placeholder:text-text-muted
+            transition-all duration-200
+            focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20
+            disabled:cursor-not-allowed disabled:opacity-50
+            ${error ? "border-primary" : ""}
+            ${className}
+          `}
+          {...props}
+        />
+        {error && (
+          <p className="text-xs text-primary">{error}</p>
+        )}
       </div>
     );
   }
 );
 
-Input.displayName = 'Input';
+Input.displayName = "Input";
 
 export default Input;

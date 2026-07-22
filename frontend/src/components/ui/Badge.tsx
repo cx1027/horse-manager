@@ -1,35 +1,27 @@
-'use client';
-
-import React from 'react';
-import { cn } from '@/lib/utils';
-
-type BadgeVariant = 'primary' | 'success' | 'warning' | 'error' | 'secondary';
-
-interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: BadgeVariant;
+interface BadgeProps {
+  children: React.ReactNode;
+  variant?: "default" | "primary" | "secondary" | "success" | "warning";
+  size?: "sm" | "md";
+  className?: string;
 }
 
-const Badge: React.FC<BadgeProps> = ({ children, variant = 'primary', className, ...props }) => {
-  const variants: Record<BadgeVariant, string> = {
-    primary: 'bg-accent/20 text-accent',
-    success: 'bg-success/20 text-success',
-    warning: 'bg-warning/20 text-warning',
-    error: 'bg-error/20 text-error',
-    secondary: 'bg-text-muted/20 text-text-secondary',
+export default function Badge({ children, variant = "default", size = "sm", className = "" }: BadgeProps) {
+  const variants = {
+    default: "bg-background-primary text-text-secondary",
+    primary: "bg-primary-soft text-primary",
+    secondary: "bg-secondary/10 text-secondary",
+    success: "bg-green-100 text-green-600",
+    warning: "bg-yellow-100 text-yellow-600",
+  };
+
+  const sizes = {
+    sm: "px-2.5 py-0.5 text-xs",
+    md: "px-3 py-1 text-sm",
   };
 
   return (
-    <span
-      className={cn(
-        'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium',
-        variants[variant],
-        className
-      )}
-      {...props}
-    >
+    <span className={`inline-flex items-center font-medium rounded-full ${variants[variant]} ${sizes[size]} ${className}`}>
       {children}
     </span>
   );
-};
-
-export default Badge;
+}

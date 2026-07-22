@@ -2,282 +2,168 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
-@layer base {
-  * {
-    box-sizing: border-box;
-  }
+:root {
+  --color-background-primary: #F0F0F0;
+  --color-background-secondary: #FAFAFA;
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #FFFFFF;
+  --color-primary: #F05050;
+  --color-primary-soft: #F8C0C8;
+  --color-secondary: #B07060;
+  --color-accent: #E85D5D;
+  --color-text-primary: #101010;
+  --color-text-secondary: #808080;
+  --color-text-muted: #A0A0A0;
+  --color-border: #E6E6E6;
+  --color-border-subtle: #F0F0F0;
+}
 
-  html {
-    scroll-behavior: smooth;
-  }
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--color-background-primary);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+@supports (padding-top: env(safe-area-inset-top)) {
   body {
-    @apply bg-background-primary text-text-primary font-sans antialiased;
-    background: #121212;
-    min-height: 100vh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
+}
 
-  ::selection {
-    @apply bg-accent/30 text-white;
-  }
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
 
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
+::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-  ::-webkit-scrollbar-track {
-    @apply bg-background-secondary;
-  }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
 
-  ::-webkit-scrollbar-thumb {
-    @apply bg-text-muted rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-text-secondary;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
 }
 
 @layer components {
   .card {
-    @apply bg-background-card rounded-card border border-border p-6 shadow-card;
-    @apply transition-all duration-300 ease-out;
+    @apply bg-surface rounded-2xl p-4 shadow-card;
   }
-
-  .card:hover {
-    @apply border-border-hover shadow-lg;
-    transform: translateY(-2px);
-  }
-
+  
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-button font-medium;
-    @apply transition-all duration-200 ease-out;
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background-primary;
+    @apply inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-50 disabled:cursor-not-allowed;
   }
-
+  
   .btn-primary {
-    @apply btn bg-accent text-white;
-    @apply hover:bg-accent-hover active:scale-95 focus:ring-accent;
+    @apply btn bg-primary text-white rounded-full px-6 py-3 hover:bg-primary-600 active:bg-primary-700 shadow-button;
   }
-
+  
   .btn-secondary {
-    @apply btn bg-background-card text-text-primary border border-border;
-    @apply hover:border-border-hover hover:bg-background-secondary;
-    @apply focus:ring-border;
+    @apply btn bg-surface text-text-primary rounded-full px-6 py-3 border border-border hover:bg-background-primary active:bg-background-primary;
   }
-
+  
   .btn-ghost {
-    @apply btn bg-transparent text-text-secondary;
-    @apply hover:bg-background-card hover:text-text-primary;
+    @apply btn bg-transparent text-text-secondary hover:bg-background-primary active:bg-background-secondary;
   }
-
+  
   .btn-danger {
-    @apply btn bg-error text-white;
-    @apply hover:bg-red-600 active:scale-95 focus:ring-error;
+    @apply btn bg-primary text-white rounded-full px-6 py-3 hover:bg-primary-600;
   }
-
-  .btn-sm {
-    @apply px-4 py-2 text-sm;
-  }
-
-  .btn-lg {
-    @apply px-8 py-4 text-lg;
-  }
-
+  
   .input {
-    @apply w-full px-4 py-3 bg-background-secondary rounded-input border border-border;
-    @apply text-text-primary placeholder:text-text-muted;
-    @apply transition-all duration-200;
-    @apply focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent;
+    @apply w-full bg-surface border border-border rounded-full px-4 py-3 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all;
   }
-
-  .input-error {
-    @apply border-error focus:border-error focus:ring-error;
+  
+  .page {
+    @apply min-h-screen bg-background-primary pb-20;
   }
-
-  .label {
-    @apply block text-sm font-medium text-text-secondary mb-2;
+  
+  .page-content {
+    @apply p-4 space-y-4;
   }
-
-  .error-text {
-    @apply text-sm text-error mt-1;
+  
+  .icon-wrapper {
+    @apply flex items-center justify-center rounded-2xl;
   }
-
+  
   .badge {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
   }
-
+  
   .badge-primary {
-    @apply badge bg-accent/20 text-accent;
+    @apply badge bg-primary-soft text-primary;
   }
-
-  .badge-success {
-    @apply badge bg-success/20 text-success;
-  }
-
-  .badge-warning {
-    @apply badge bg-warning/20 text-warning;
-  }
-
-  .badge-error {
-    @apply badge bg-error/20 text-error;
-  }
-
+  
   .badge-secondary {
-    @apply badge bg-text-muted/20 text-text-secondary;
+    @apply badge bg-secondary/10 text-secondary;
   }
-
-  .heading-1 {
-    @apply text-4xl font-bold text-text-primary;
-  }
-
-  .heading-2 {
-    @apply text-3xl font-bold text-text-primary;
-  }
-
-  .heading-3 {
-    @apply text-2xl font-semibold text-text-primary;
-  }
-
-  .heading-4 {
-    @apply text-xl font-semibold text-text-primary;
-  }
-
-  .text-body {
-    @apply text-base text-text-primary;
-  }
-
-  .text-small {
-    @apply text-sm text-text-secondary;
-  }
-
-  .stat-card {
-    @apply card flex flex-col gap-2;
-  }
-
-  .stat-value {
-    @apply text-3xl font-bold text-text-primary;
-  }
-
-  .stat-label {
-    @apply text-sm text-text-secondary;
-  }
-
-  .page-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
-  }
-
-  .section-title {
-    @apply text-xl font-semibold text-text-primary mb-4;
-  }
-
-  .grid-cards {
-    @apply grid gap-6;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
-
-  .empty-state {
-    @apply flex flex-col items-center justify-center py-12 text-center;
-  }
-
-  .empty-state-icon {
-    @apply w-16 h-16 text-text-muted mb-4;
-  }
-
-  .empty-state-title {
-    @apply text-xl font-medium text-text-primary mb-2;
-  }
-
-  .empty-state-description {
-    @apply text-text-secondary max-w-md;
-  }
-
-  .loading-spinner {
-    @apply animate-spin rounded-full border-2 border-text-muted border-t-accent;
-  }
-
-  .skeleton {
-    @apply animate-pulse bg-background-secondary rounded;
-  }
-
-  .divider {
-    @apply border-t border-border my-6;
-  }
-
-  .overlay {
-    @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-40;
-  }
-
-  .modal {
-    @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
-    @apply bg-background-card rounded-card border border-border p-6;
-    @apply shadow-xl z-50 max-w-lg w-full max-h-[90vh] overflow-auto;
-  }
-
-  .tab {
-    @apply px-4 py-2 text-text-secondary font-medium;
-    @apply border-b-2 border-transparent;
-    @apply transition-all duration-200;
-    @apply hover:text-text-primary;
-  }
-
-  .tab-active {
-    @apply tab text-accent border-accent;
-  }
-
-  .chip {
-    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full;
-    @apply bg-background-secondary text-text-secondary text-sm;
-    @apply transition-colors duration-200;
-    @apply hover:bg-background-card hover:text-text-primary;
-  }
-
-  .avatar {
-    @apply rounded-full overflow-hidden bg-background-secondary;
-    @apply flex items-center justify-center font-medium text-text-secondary;
-  }
-
-  .avatar-sm {
-    @apply avatar w-8 h-8 text-xs;
-  }
-
-  .avatar-md {
-    @apply avatar w-10 h-10 text-sm;
-  }
-
-  .avatar-lg {
-    @apply avatar w-16 h-16 text-lg;
-  }
-
-  .tooltip {
-    @apply absolute z-50 px-2 py-1 text-xs text-white bg-text-muted rounded;
-    @apply opacity-0 invisible transition-all duration-200;
-  }
-
-  .has-tooltip:hover .tooltip {
-    @apply opacity-100 visible;
+  
+  .bottom-nav {
+    padding-bottom: max(env(safe-area-inset-bottom), 16px);
   }
 }
 
-@layer utilities {
-  .gradient-text {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #E12E6D, #F472B6);
-  }
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
 
-  .gradient-accent {
-    background: linear-gradient(135deg, #E12E6D, #A855F7);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  .glow-accent {
-    box-shadow: 0 0 20px rgba(225, 46, 109, 0.3);
-  }
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
 
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #E12E6D 0%, #F472B6 100%);
-  }
+.progress-bar {
+  @apply h-1 bg-border rounded-full overflow-hidden;
+}
+
+.progress-bar-fill {
+  @apply h-full bg-primary rounded-full transition-all duration-300;
+}
+
+.list-item {
+  @apply flex items-center gap-3 p-4 bg-surface rounded-2xl shadow-card;
+}
+
+.empty-state {
+  @apply flex flex-col items-center justify-center py-12 text-center;
+}
+
+.overlay {
+  @apply fixed inset-0 bg-black/40 z-40;
+}
+
+.modal {
+  @apply fixed bottom-0 left-0 right-0 bg-surface rounded-t-3xl p-6 z-50 max-h-[90vh] overflow-auto;
 }

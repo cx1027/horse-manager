@@ -1,62 +1,55 @@
-'use client';
+"use client";
 
-import React, { forwardRef } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { SelectHTMLAttributes, forwardRef } from "react";
 
 interface SelectOption {
   value: string;
   label: string;
 }
 
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
-  error?: string;
   options: SelectOption[];
-  placeholder?: string;
+  error?: string;
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, error, options, placeholder, className, id, ...props }, ref) => {
-    const selectId = id || label?.toLowerCase().replace(/\s+/g, '-');
-
+  ({ className = "", label, options, error, ...props }, ref) => {
     return (
-      <div className="w-full">
+      <div className="space-y-1.5">
         {label && (
-          <label htmlFor={selectId} className="label">
+          <label className="block text-sm font-medium text-text-primary">
             {label}
           </label>
         )}
-        <div className="relative">
-          <select
-            ref={ref}
-            id={selectId}
-            className={cn(
-              'input appearance-none pr-10 cursor-pointer',
-              error && 'input-error',
-              className
-            )}
-            {...props}
-          >
-            {placeholder && (
-              <option value="" disabled>
-                {placeholder}
-              </option>
-            )}
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
-        </div>
-        {error && <p className="error-text">{error}</p>}
+        <select
+          ref={ref}
+          className={`
+            w-full rounded-full border border-border bg-surface px-4 py-3 
+            text-sm text-text-primary
+            transition-all duration-200
+            focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20
+            disabled:cursor-not-allowed disabled:opacity-50
+            cursor-pointer
+            ${error ? "border-primary" : ""}
+            ${className}
+          `}
+          {...props}
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        {error && (
+          <p className="text-xs text-primary">{error}</p>
+        )}
       </div>
     );
   }
 );
 
-Select.displayName = 'Select';
+Select.displayName = "Select";
 
 export default Select;

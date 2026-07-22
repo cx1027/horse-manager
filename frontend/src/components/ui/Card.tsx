@@ -1,44 +1,48 @@
-'use client';
+import { ReactNode } from "react";
 
-import React from 'react';
-import { cn } from '@/lib/utils';
-
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  hover?: boolean;
-  padding?: 'none' | 'sm' | 'md' | 'lg';
-  gradient?: boolean;
+interface CardProps {
+  children: ReactNode;
+  className?: string;
+  onClick?: () => void;
+  padding?: "none" | "sm" | "md" | "lg";
 }
 
-const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ children, className, hover = true, padding = 'md', gradient = false, ...props }, ref) => {
-    const paddings = {
-      none: '',
-      sm: 'p-4',
-      md: 'p-6',
-      lg: 'p-8',
-    };
+export default function Card({ children, className = "", onClick, padding = "md" }: CardProps) {
+  const paddingStyles = {
+    none: "",
+    sm: "p-4",
+    md: "p-5",
+    lg: "p-6",
+  };
 
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          'rounded-[20px] border border-border',
-          gradient 
-            ? 'bg-gradient-to-br from-[#1E1E1E] to-[#2A2A2A]' 
-            : 'bg-[#1E1E1E]',
-          hover && 'transition-all duration-300 ease-out hover:border-[rgba(255,255,255,0.2)] hover:-translate-y-0.5',
-          'shadow-[0_4px_24px_rgba(0,0,0,0.3)]',
-          paddings[padding],
-          className
-        )}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  }
-);
+  const Component = onClick ? "button" : "div";
+  
+  return (
+    <Component
+      className={`bg-surface rounded-3xl shadow-card ${paddingStyles[padding]} ${onClick ? "cursor-pointer hover:shadow-elevated transition-shadow w-full text-left" : ""} ${className}`}
+      onClick={onClick}
+    >
+      {children}
+    </Component>
+  );
+}
 
-Card.displayName = 'Card';
+export function CardHeader({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <div className={`mb-4 ${className}`}>{children}</div>;
+}
 
-export default Card;
+export function CardTitle({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <h3 className={`text-lg font-medium text-text-primary ${className}`}>{children}</h3>;
+}
+
+export function CardDescription({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <p className={`text-sm text-text-secondary mt-2 leading-relaxed ${className}`}>{children}</p>;
+}
+
+export function CardContent({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <div className={className}>{children}</div>;
+}
+
+export function CardFooter({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <div className={`mt-5 pt-5 border-t border-border ${className}`}>{children}</div>;
+}

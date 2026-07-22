@@ -1,92 +1,40 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Fragment, ReactNode } from "react";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title?: string;
-  description?: string;
-  children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  className?: string;
+  title: string;
+  children: ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({
-  isOpen,
-  onClose,
-  title,
-  description,
-  children,
-  size = 'md',
-  className,
-}) => {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-    }
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
-
+export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null;
 
-  const sizes = {
-    sm: 'max-w-sm',
-    md: 'max-w-lg',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl',
-  };
-
-  return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto">
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-fade-in"
+        className="fixed inset-0 bg-black/50 transition-opacity"
         onClick={onClose}
       />
-      <div
-        className={cn(
-          'relative w-full bg-background-card rounded-card border border-border p-6 shadow-xl',
-          'animate-slide-up max-h-[90vh] overflow-auto',
-          sizes[size],
-          className
-        )}
-      >
-        {title && (
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <h2 className="text-xl font-semibold text-text-primary">{title}</h2>
-              {description && (
-                <p className="text-sm text-text-secondary mt-1">{description}</p>
-              )}
-            </div>
+
+      <div className="flex min-h-full items-center justify-center p-4">
+        <div className="relative w-full max-w-md rounded-3xl bg-surface p-6 shadow-elevated transform transition-all">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-bold text-text-primary">{title}</h2>
             <button
               onClick={onClose}
-              className="p-1 rounded-lg text-text-secondary hover:text-text-primary hover:bg-background-secondary transition-colors"
+              className="rounded-full p-2 text-text-muted hover:bg-background-primary hover:text-text-primary transition-colors"
             >
-              <X className="w-5 h-5" />
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
-        )}
-        {children}
+          <div>{children}</div>
+        </div>
       </div>
-    </div>,
-    document.body
+    </div>
   );
-};
-
-export default Modal;
+}
