@@ -12,8 +12,8 @@ import {
   Save,
   Camera,
   MapPin,
-  Horse as HorseIcon
 } from 'lucide-react';
+import HorseIcon from '@/components/ui/HorseIcon';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 

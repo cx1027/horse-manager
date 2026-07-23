@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import MicrographicsLayout from '@/components/layout/MicrographicsLayout';
+import Layout from '@/components/layout/Layout';
 import StatCard from '@/components/ui/StatCard';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
@@ -75,11 +75,11 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <MicrographicsLayout variant="dark">
-        <div className="flex items-center justify-center min-h-screen">
+      <Layout user={user}>
+        <div className="flex items-center justify-center min-h-[60vh]">
           <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#E12E6D' }} />
         </div>
-      </MicrographicsLayout>
+      </Layout>
     );
   }
 
@@ -96,7 +96,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <MicrographicsLayout variant="dark">
+    <Layout user={user}>
       <div className="min-h-screen p-6">
         {/* Header with Logo */}
         <div className="flex items-center justify-between mb-8">
@@ -296,6 +296,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-    </MicrographicsLayout>
+    </Layout>
   );
 }
