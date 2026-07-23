@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import HorseIcon from '@/components/ui/HorseIcon';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,6 +14,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -22,8 +25,36 @@ export default function LoginPage() {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    router.push('/dashboard');
+    setError('');
+
+    try {
+      const response = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error?.message || '登录失败');
+      }
+
+      localStorage.setItem('authToken', data.jwt);
+      localStorage.setItem('user', JSON.stringify({
+        id: data.user.id,
+        username: data.user.username,
+        email: data.user.email,
+        role: typeof data.user.role === 'string' ? data.user.role : (data.user.role?.type || 'user'),
+      }));
+      router.push('/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '登录失败，请稍后重试');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -174,6 +205,13 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="p-3 rounded-lg" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+                <p className="text-sm" style={{ color: '#EF4444' }}>{error}</p>
+              </div>
+            )}
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">

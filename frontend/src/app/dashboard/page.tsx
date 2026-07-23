@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import StatCard from '@/components/ui/StatCard';
 import Card from '@/components/ui/Card';
@@ -12,42 +12,85 @@ import {
   Activity,
   AlertCircle,
   Plus,
-  ArrowRight
+  ArrowRight,
+  Loader2
 } from 'lucide-react';
 import HorseIcon from '@/components/ui/HorseIcon';
 import Link from 'next/link';
 import { formatDate } from '@/lib/utils';
 
-// Mock data for demo
-const mockStats = {
-  totalHorses: 24,
-  activeHorses: 18,
-  medicalRecords: 156,
-  upcomingAppointments: 5,
-};
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337/api';
 
-const mockRecentHorses = [
-  { id: '1', name: '闪电', breed: '纯血马', status: 'active', coverImage: null },
-  { id: '2', name: '黑旋风', breed: '阿拉伯马', status: 'active', coverImage: null },
-  { id: '3', name: '小白', breed: '温血马', status: 'inactive', coverImage: null },
-];
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  role?: string;
+}
 
-const mockUpcomingAppointments = [
-  { id: '1', horseName: '闪电', type: 'vaccination', date: '2024-04-15', veterinarian: '张医生' },
-  { id: '2', horseName: '黑旋风', type: 'checkup', date: '2024-04-16', veterinarian: '李医生' },
-  { id: '3', horseName: '小白', type: 'dental', date: '2024-04-18', veterinarian: '王医生' },
-];
-
-const mockHealthAlerts = [
-  { id: '1', horseName: '黑旋风', message: '体重低于标准值', severity: 'warning' },
-  { id: '2', horseName: '小白', message: '疫苗即将到期', severity: 'info' },
-];
+interface Horse {
+  id: string;
+  documentId?: string;
+  name: string;
+  breed?: string;
+  status?: string;
+  coverImage?: string | null;
+}
 
 export default function DashboardPage() {
-  const user = {
-    name: '张三',
-    email: 'zhangsan@example.com',
-    avatar: null,
+  const [user, setUser] = useState<User | null>(null);
+  const [horses, setHorses] = useState<Horse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      const storedUser = localStorage.getItem('user');
+      const token = localStorage.getItem('authToken');
+
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+
+        if (token) {
+          try {
+            const response = await fetch(`${API_URL}/horses?populate=*`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            if (response.ok) {
+              const data = await response.json();
+              setHorses(data.data || []);
+            }
+          } catch (error) {
+            console.error('Failed to fetch horses:', error);
+          }
+        }
+      }
+      setIsLoading(false);
+    };
+
+    loadUserData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  const displayName = user.username || user.email?.split('@')[0] || '用户';
+  const stats = {
+    totalHorses: horses.length,
+    activeHorses: horses.filter(h => h.status === 'active').length,
+    medicalRecords: 0,
+    upcomingAppointments: 0,
   };
 
   return (
@@ -55,10 +98,10 @@ export default function DashboardPage() {
       {/* Welcome Section */}
       <div className="mb-8">
         <h1 className="heading-2 mb-2">
-          欢迎回来，{user.name}
+          欢迎回来，{displayName}
         </h1>
         <p className="text-text-secondary">
-          {formatDate(new Date().toISOString())} · 今天有 {mockUpcomingAppointments.length} 个待处理事项
+          {formatDate(new Date().toISOString())} · {stats.totalHorses} 匹马匹
         </p>
       </div>
 
@@ -66,20 +109,20 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard
           title="马匹总数"
-          value={mockStats.totalHorses}
+          value={stats.totalHorses}
           icon={<HorseIcon className="w-5 h-5" />}
-          subtitle={`${mockStats.activeHorses} 匹活跃`}
+          subtitle={`${stats.activeHorses} 匹活跃`}
           trend={{ value: 12, isPositive: true }}
         />
         <StatCard
           title="医疗记录"
-          value={mockStats.medicalRecords}
+          value={stats.medicalRecords}
           icon={<Stethoscope className="w-5 h-5" />}
-          subtitle="本月新增 12 条"
+          subtitle="本月新增 0 条"
         />
         <StatCard
           title="待处理预约"
-          value={mockStats.upcomingAppointments}
+          value={stats.upcomingAppointments}
           icon={<Calendar className="w-5 h-5" />}
           subtitle="本周内"
         />
@@ -104,10 +147,10 @@ export default function DashboardPage() {
               </Link>
             </div>
             <div className="p-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {mockRecentHorses.map((horse) => (
+              {horses.slice(0, 6).map((horse) => (
                 <Link
                   key={horse.id}
-                  href={`/horses/${horse.id}`}
+                  href={`/horses/${horse.documentId || horse.id}`}
                   className="group"
                 >
                   <div className="bg-background-secondary rounded-xl p-4 hover:bg-background-primary transition-colors">
@@ -117,7 +160,7 @@ export default function DashboardPage() {
                     <h3 className="font-semibold text-text-primary group-hover:text-accent transition-colors">
                       {horse.name}
                     </h3>
-                    <p className="text-sm text-text-secondary">{horse.breed}</p>
+                    <p className="text-sm text-text-secondary">{horse.breed || '未知品种'}</p>
                     <Badge
                       variant={horse.status === 'active' ? 'success' : 'secondary'}
                       className="mt-2"
@@ -145,62 +188,6 @@ export default function DashboardPage() {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Upcoming Appointments */}
-          <Card>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="heading-4">待处理预约</h2>
-              <Calendar className="w-5 h-5 text-accent" />
-            </div>
-            <div className="space-y-3">
-              {mockUpcomingAppointments.map((appointment) => (
-                <div
-                  key={appointment.id}
-                  className="flex items-center gap-3 p-3 bg-background-secondary rounded-lg"
-                >
-                  <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
-                    <Stethoscope className="w-5 h-5 text-accent" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-text-primary truncate">
-                      {appointment.horseName}
-                    </p>
-                    <p className="text-xs text-text-secondary">
-                      {appointment.date} · {appointment.veterinarian}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          {/* Health Alerts */}
-          <Card>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="heading-4">健康提醒</h2>
-              <AlertCircle className="w-5 h-5 text-warning" />
-            </div>
-            <div className="space-y-3">
-              {mockHealthAlerts.map((alert) => (
-                <div
-                  key={alert.id}
-                  className="flex items-start gap-3 p-3 bg-background-secondary rounded-lg"
-                >
-                  <div className={`w-2 h-2 rounded-full mt-2 ${
-                    alert.severity === 'warning' ? 'bg-warning' : 'bg-accent'
-                  }`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-text-primary">
-                      {alert.horseName}
-                    </p>
-                    <p className="text-xs text-text-secondary">
-                      {alert.message}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-
           {/* Quick Actions */}
           <Card>
             <h2 className="heading-4 mb-4">快捷操作</h2>
@@ -233,6 +220,27 @@ export default function DashboardPage() {
                 <TrendingUp className="w-6 h-6 text-accent" />
                 <span className="text-sm text-text-secondary">查看报表</span>
               </Link>
+            </div>
+          </Card>
+
+          {/* User Info */}
+          <Card>
+            <h2 className="heading-4 mb-4">账户信息</h2>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center text-white font-semibold">
+                  {displayName.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <p className="font-medium text-text-primary">{displayName}</p>
+                  <p className="text-xs text-text-secondary">{user.email}</p>
+                </div>
+              </div>
+              {user.role && (
+                <Badge variant="primary" className="mt-2">
+                  {user.role === 'investor' ? '投资者' : user.role === 'staff' ? '员工' : '用户'}
+                </Badge>
+              )}
             </div>
           </Card>
         </div>

@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, Bell, User, Menu, X, ChevronDown } from 'lucide-react';
+import { Search, Bell, User, Menu, X, ChevronDown, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Avatar from '../ui/Avatar';
 import Button from '../ui/Button';
@@ -18,9 +18,31 @@ interface HeaderProps {
   isMenuOpen?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ user, onMenuClick, isMenuOpen }) => {
+const Header: React.FC<HeaderProps> = ({ user: propUser, onMenuClick, isMenuOpen }) => {
   const pathname = usePathname();
-  const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [user, setUser] = useState(propUser || null);
+
+  useEffect(() => {
+    const loadUser = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    };
+    loadUser();
+    
+    window.addEventListener('storage', loadUser);
+    return () => window.removeEventListener('storage', loadUser);
+  }, []);
+
+  const displayName = user?.name || user?.email?.split('@')[0] || '用户';
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('authToken');
+    window.location.href = '/login';
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-background-primary/80 backdrop-blur-lg border-b border-border">
@@ -128,9 +150,9 @@ const Header: React.FC<HeaderProps> = ({ user, onMenuClick, isMenuOpen }) => {
             {user ? (
               <div className="relative group">
                 <button className="flex items-center gap-2 p-2 rounded-button hover:bg-background-secondary">
-                  <Avatar src={user.avatar} name={user.name} size="sm" />
+                  <Avatar src={user.avatar} name={displayName} size="sm" />
                   <span className="hidden sm:block text-sm font-medium text-text-primary">
-                    {user.name}
+                    {displayName}
                   </span>
                   <ChevronDown className="w-4 h-4 text-text-secondary" />
                 </button>
@@ -156,14 +178,20 @@ const Header: React.FC<HeaderProps> = ({ user, onMenuClick, isMenuOpen }) => {
                     </Link>
                   )}
                   <div className="border-t border-border mt-2 pt-2">
-                    <button className="w-full text-left px-4 py-2 text-sm text-error hover:bg-background-secondary">
+                    <button 
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm text-error hover:bg-background-secondary flex items-center gap-2"
+                    >
+                      <LogOut className="w-4 h-4" />
                       退出登录
                     </button>
                   </div>
                 </div>
               </div>
             ) : (
-              <Button size="sm">登录</Button>
+              <Link href="/login">
+                <Button size="sm">登录</Button>
+              </Link>
             )}
           </div>
         </div>

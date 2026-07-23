@@ -70,7 +70,7 @@ export default function HomePage() {
                   boxShadow: '0 8px 32px rgba(225, 46, 109, 0.4)'
                 }}
               >
-                立即开始
+                登录
                 <ArrowRight className="w-5 h-5" />
               </button>
             </Link>

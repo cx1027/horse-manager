@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
@@ -15,22 +15,57 @@ import {
   Bell,
   Eye,
   EyeOff,
-  Save
+  Save,
+  Loader2
 } from 'lucide-react';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337/api';
+
+interface UserData {
+  id: number;
+  username: string;
+  email: string;
+  role?: string;
+  phone?: string;
+  company?: string;
+}
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const user = {
-    name: '张三',
-    email: 'zhangsan@example.com',
-    phone: '+86 138 8888 8888',
-    company: '北京马术俱乐部',
-    role: 'admin' as const,
-    avatar: null,
-    joinDate: '2024-01-15',
-  };
+  useEffect(() => {
+    const loadUser = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+      setIsLoading(false);
+    };
+    loadUser();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Layout user={null}>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <p className="text-text-secondary">请先登录</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  const displayName = user.username || user.email?.split('@')[0] || '用户';
 
   const notifications = {
     email: true,
@@ -64,14 +99,14 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex items-start gap-6 mb-6">
-              <Avatar src={user.avatar} name={user.name} size="xl" />
+              <Avatar src={null} name={displayName} size="xl" />
               <div className="flex-1">
-                <h3 className="text-xl font-semibold text-text-primary mb-1">{user.name}</h3>
-                <Badge variant={user.role === 'admin' ? 'primary' : 'secondary'}>
+                <h3 className="text-xl font-semibold text-text-primary mb-1">{displayName}</h3>
+                <Badge variant={user.role === 'admin' ? 'primary' : user.role === 'investor' ? 'success' : 'secondary'}>
                   {user.role === 'admin' ? '管理员' : user.role === 'staff' ? '员工' : user.role === 'investor' ? '投资者' : '用户'}
                 </Badge>
                 <p className="text-sm text-text-secondary mt-2">
-                  加入于 {new Date(user.joinDate).toLocaleDateString('zh-CN')}
+                  注册用户
                 </p>
               </div>
             </div>
@@ -83,7 +118,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <p className="text-sm text-text-secondary">用户名</p>
-                  <p className="text-text-primary font-medium">{user.name}</p>
+                  <p className="text-text-primary font-medium">{displayName}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-4 bg-background-secondary rounded-xl">
@@ -101,7 +136,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <p className="text-sm text-text-secondary">电话</p>
-                  <p className="text-text-primary font-medium">{user.phone}</p>
+                  <p className="text-text-primary font-medium">{user.phone || '未设置'}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-4 bg-background-secondary rounded-xl">
@@ -110,7 +145,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <p className="text-sm text-text-secondary">公司</p>
-                  <p className="text-text-primary font-medium">{user.company}</p>
+                  <p className="text-text-primary font-medium">{user.company || '未设置'}</p>
                 </div>
               </div>
             </div>
