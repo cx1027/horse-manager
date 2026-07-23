@@ -2,26 +2,24 @@
 
 import React, { useEffect, useState } from 'react';
 import Layout from '@/components/layout/Layout';
-import StatCard from '@/components/ui/StatCard';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
+  Home,
+  Users,
   Stethoscope,
-  Calendar,
-  TrendingUp,
-  Activity,
-  Plus,
-  ArrowRight,
-  Loader2
+  BarChart3,
+  User,
+  Loader2,
+  Plus
 } from 'lucide-react';
 import HorseIcon from '@/components/ui/HorseIcon';
-import Link from 'next/link';
-import { formatDate } from '@/lib/utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337/api';
 
-interface User {
+interface UserType {
   id: number;
   username: string;
   email: string;
@@ -37,8 +35,16 @@ interface Horse {
   coverImage?: string | null;
 }
 
+const navItems = [
+  { icon: Home, label: 'Home', href: '/dashboard', active: true },
+  { icon: Users, label: 'Horses', href: '/horses', active: false },
+  { icon: Stethoscope, label: 'Medical', href: '/medical', active: false },
+  { icon: BarChart3, label: 'Reports', href: '/reports', active: false },
+  { icon: User, label: 'Profile', href: '/profile', active: false },
+];
+
 export default function DashboardPage() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [horses, setHorses] = useState<Horse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -73,6 +79,15 @@ export default function DashboardPage() {
     loadUserData();
   }, []);
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
+  const displayName = user?.username || user?.email?.split('@')[0] || 'User';
+
   if (isLoading) {
     return (
       <Layout user={user}>
@@ -87,214 +102,113 @@ export default function DashboardPage() {
     return null;
   }
 
-  const displayName = user.username || user.email?.split('@')[0] || 'User';
-  const stats = {
-    totalHorses: horses.length,
-    activeHorses: horses.filter(h => h.status === 'active').length,
-    medicalRecords: 0,
-    upcomingAppointments: 0,
-  };
-
   return (
     <Layout user={user}>
-      <div className="min-h-screen p-6">
-        {/* Header with Logo */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <div className="relative w-[60px] h-[48px]">
+      <div className="min-h-screen" style={{ background: '#0A0A0A' }}>
+        {/* Status Bar Spacer - Mobile only */}
+        <div className="h-11 lg:hidden" />
+
+        {/* Header */}
+        <header className="sticky top-0 z-40 px-4 py-3 flex items-center justify-between" style={{ background: 'rgba(10, 10, 10, 0.9)', backdropFilter: 'blur(12px)' }}>
+          <div className="flex items-center gap-3">
+            {/* Logo */}
+            <div className="relative w-10 h-8">
               <Image
                 src="/images/background.webp"
                 alt=""
                 fill
-                className="object-contain mix-blend-overlay"
+                className="object-contain"
                 unoptimized
               />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold" style={{ color: '#FFFFFF' }}>HorseInfo</h1>
-              <p className="text-sm" style={{ color: '#666666' }}>Dashboard</p>
-            </div>
+            <span className="font-semibold" style={{ color: '#FFFFFF' }}>HorseInfo</span>
           </div>
-          <Link
-            href="/profile"
-            className="flex items-center gap-2"
-          >
-            <span className="text-sm" style={{ color: '#A0A0A0' }}>{displayName}</span>
+
+          {/* User Avatar */}
+          <Link href="/profile" className="flex items-center gap-2">
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
-              style={{ background: 'linear-gradient(135deg, #E12E6D, #A855F7)' }}
+              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold"
+              style={{ background: 'linear-gradient(135deg, #E12E6D, #A855F7)', color: '#FFFFFF' }}
             >
               {displayName.charAt(0).toUpperCase()}
             </div>
           </Link>
-        </div>
+        </header>
 
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2" style={{ color: '#FFFFFF' }}>
-            Welcome back, {displayName}
-          </h1>
-          <p style={{ color: '#666666' }}>
-            {formatDate(new Date().toISOString())} · {stats.totalHorses} horses
-          </p>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard
-            title="Total Horses"
-            value={stats.totalHorses}
-            icon={<HorseIcon className="w-5 h-5" />}
-            subtitle={`${stats.activeHorses} active`}
-            trend={{ value: 12, isPositive: true }}
-          />
-          <StatCard
-            title="Medical Records"
-            value={stats.medicalRecords}
-            icon={<Stethoscope className="w-5 h-5" />}
-            subtitle="0 new this month"
-          />
-          <StatCard
-            title="Upcoming"
-            value={stats.upcomingAppointments}
-            icon={<Calendar className="w-5 h-5" />}
-            subtitle="This week"
-          />
-          <StatCard
-            title="Health Trend"
-            value="Good"
-            icon={<TrendingUp className="w-5 h-5" />}
-            subtitle="Overall up"
-            trend={{ value: 8, isPositive: true }}
-          />
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Recent Horses */}
-          <div className="lg:col-span-2">
-            <Card padding="none">
-              <div className="p-6 border-b flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-                <h2 className="text-lg font-medium" style={{ color: '#FFFFFF' }}>Horse Overview</h2>
-                <Link href="/horses" className="flex items-center gap-1 text-sm font-medium transition-colors" style={{ color: '#E12E6D' }}>
-                  View all <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-              <div className="p-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {horses.slice(0, 6).map((horse) => (
-                  <Link
-                    key={horse.id}
-                    href={`/horses/${horse.documentId || horse.id}`}
-                    className="group"
-                  >
-                    <div className="rounded-xl p-4 transition-colors" style={{ background: '#1A1A1A' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#242424'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#1A1A1A'; }}
-                    >
-                      <div className="w-full h-32 rounded-lg mb-3 flex items-center justify-center" style={{ background: 'rgba(225, 46, 109, 0.1)' }}>
-                        <HorseIcon className="w-12 h-12" style={{ color: 'rgba(225, 46, 109, 0.4)' }} />
-                      </div>
-                      <h3 className="font-semibold group-hover:gradient-text transition-colors" style={{ color: '#FFFFFF' }}>
-                        {horse.name}
-                      </h3>
-                      <p className="text-sm" style={{ color: '#666666' }}>{horse.breed || 'Unknown breed'}</p>
-                      <Badge
-                        variant={horse.status === 'active' ? 'success' : 'secondary'}
-                        className="mt-2"
-                      >
-                        {horse.status === 'active' ? 'Active' : 'Inactive'}
-                      </Badge>
-                    </div>
-                  </Link>
-                ))}
-                {/* Add New Horse */}
-                <Link href="/horses/new" className="group">
-                  <div
-                    className="w-full min-h-[180px] border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-2 transition-colors"
-                    style={{ borderColor: 'rgba(255,255,255,0.1)' }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.borderColor = '#E12E6D';
-                      el.style.background = 'rgba(225, 46, 109, 0.05)';
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.borderColor = 'rgba(255,255,255,0.1)';
-                      el.style.background = 'transparent';
-                    }}
-                  >
-                    <Plus className="w-8 h-8 group-hover:scale-110 transition-transform" style={{ color: '#666666' }} />
-                    <span className="text-sm group-hover:transition-colors" style={{ color: '#666666' }}>
-                      Add Horse
-                    </span>
-                  </div>
-                </Link>
-              </div>
-            </Card>
+        {/* Main Content */}
+        <main className="px-4 pb-24">
+          {/* Greeting */}
+          <div className="py-6">
+            <h1 className="text-2xl font-semibold" style={{ color: '#FFFFFF' }}>
+              {getGreeting()}, {displayName}
+            </h1>
+            <p className="text-sm mt-1" style={{ color: '#6B7280' }}>
+              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+            </p>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Actions */}
-            <Card>
-              <h2 className="text-lg font-medium mb-4" style={{ color: '#FFFFFF' }}>Quick Actions</h2>
-              <div className="grid grid-cols-2 gap-3">
-                <Link href="/horses/new" className="flex flex-col items-center gap-2 p-4 rounded-xl transition-colors" style={{ background: '#1A1A1A' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(225, 46, 109, 0.1)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#1A1A1A'; }}
+          {/* My Barn Section */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold" style={{ color: '#FFFFFF' }}>My Barn</h2>
+            <Link href="/horses" className="text-sm font-medium" style={{ color: '#E12E6D' }}>
+              See all
+            </Link>
+          </div>
+
+          {/* Horse Cards Grid - 2 columns */}
+          <div className="grid grid-cols-2 gap-3">
+            {horses.slice(0, 6).map((horse) => (
+              <Link key={horse.id} href={`/horses/${horse.documentId || horse.id}`}>
+                <Card
+                  padding="sm"
+                  className="h-full"
+                  style={{ background: '#1A1A1A' }}
+                >
+                  {/* Horse Image/Icon */}
+                  <div
+                    className="w-full aspect-square rounded-lg mb-3 flex items-center justify-center"
+                    style={{ background: 'rgba(225, 46, 109, 0.1)' }}
+                  >
+                    <HorseIcon className="w-10 h-10" style={{ color: 'rgba(225, 46, 109, 0.6)' }} />
+                  </div>
+
+                  {/* Horse Info */}
+                  <div>
+                    <h3 className="font-medium text-sm truncate" style={{ color: '#FFFFFF' }}>
+                      {horse.name}
+                    </h3>
+                    <p className="text-xs truncate mt-0.5" style={{ color: '#6B7280' }}>
+                      {horse.breed || 'Unknown breed'}
+                    </p>
+                    <Badge
+                      variant={horse.status === 'active' ? 'success' : 'secondary'}
+                      className="mt-2 text-xs"
+                    >
+                      {horse.status === 'active' ? 'Active' : 'Inactive'}
+                    </Badge>
+                  </div>
+                </Card>
+              </Link>
+            ))}
+
+            {/* Add New Horse Card */}
+            <Link href="/horses/new">
+              <Card
+                padding="sm"
+                className="h-full min-h-[200px] flex flex-col items-center justify-center"
+                style={{ background: 'transparent', border: '1px dashed #374151' }}
+              >
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2"
+                  style={{ background: 'rgba(225, 46, 109, 0.1)' }}
                 >
                   <Plus className="w-6 h-6" style={{ color: '#E12E6D' }} />
-                  <span className="text-sm" style={{ color: '#A0A0A0' }}>Add Horse</span>
-                </Link>
-                <Link href="/medical/new" className="flex flex-col items-center gap-2 p-4 rounded-xl transition-colors" style={{ background: '#1A1A1A' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(16, 185, 129, 0.1)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#1A1A1A'; }}
-                >
-                  <Stethoscope className="w-6 h-6" style={{ color: '#10B981' }} />
-                  <span className="text-sm" style={{ color: '#A0A0A0' }}>Medical</span>
-                </Link>
-                <Link href="/health/new" className="flex flex-col items-center gap-2 p-4 rounded-xl transition-colors" style={{ background: '#1A1A1A' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(245, 158, 11, 0.1)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#1A1A1A'; }}
-                >
-                  <Activity className="w-6 h-6" style={{ color: '#F59E0B' }} />
-                  <span className="text-sm" style={{ color: '#A0A0A0' }}>Health</span>
-                </Link>
-                <Link href="/reports" className="flex flex-col items-center gap-2 p-4 rounded-xl transition-colors" style={{ background: '#1A1A1A' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(225, 46, 109, 0.1)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#1A1A1A'; }}
-                >
-                  <TrendingUp className="w-6 h-6" style={{ color: '#E12E6D' }} />
-                  <span className="text-sm" style={{ color: '#A0A0A0' }}>Reports</span>
-                </Link>
-              </div>
-            </Card>
-
-            {/* User Info */}
-            <Card>
-              <h2 className="text-lg font-medium mb-4" style={{ color: '#FFFFFF' }}>Account</h2>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
-                    style={{ background: 'linear-gradient(135deg, #E12E6D, #A855F7)' }}
-                  >
-                    {displayName.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <p className="font-medium" style={{ color: '#FFFFFF' }}>{displayName}</p>
-                    <p className="text-xs" style={{ color: '#666666' }}>{user.email}</p>
-                  </div>
                 </div>
-                {user.role && (
-                  <Badge variant="primary" className="mt-2">
-                    {user.role === 'investor' ? 'Investor' : user.role === 'staff' ? 'Staff' : 'User'}
-                  </Badge>
-                )}
-              </div>
-            </Card>
+                <span className="text-sm" style={{ color: '#6B7280' }}>Add Horse</span>
+              </Card>
+            </Link>
           </div>
-        </div>
+        </main>
       </div>
     </Layout>
   );
