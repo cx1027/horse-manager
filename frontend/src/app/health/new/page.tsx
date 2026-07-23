@@ -1,26 +1,22 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Layout from '@/components/layout/Layout';
-import Card from '@/components/ui/Card';
+import MicrographicsLayout from '@/components/layout/MicrographicsLayout';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Textarea from '@/components/ui/Textarea';
 import DatePicker from '@/components/ui/DatePicker';
-import { ArrowLeft, Save, Activity } from 'lucide-react';
+import { ArrowLeft, Save, Activity, Loader2, Heart, Thermometer, Scale } from 'lucide-react';
 import Link from 'next/link';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337/api';
-
-export default function NewHealthPage() {
+function NewHealthContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preselectedHorseId = searchParams?.get('horseId') || '';
-  const [horses, setHorses] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData] = useState({
     horseId: preselectedHorseId,
     recordDate: new Date().toISOString().slice(0, 10),
     weight: '',
@@ -30,192 +26,113 @@ export default function NewHealthPage() {
     notes: '',
   });
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
-        const res = await fetch(`${API_URL}/horses?pagination[pageSize]=100`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
-        if (res.ok) {
-          const json = await res.json();
-          setHorses(Array.isArray(json.data) ? json.data : []);
-        }
-      } catch (e) {
-        console.warn('Failed to load horses', e);
-      }
-    };
-    load();
-  }, []);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    try {
-      const token = localStorage.getItem('authToken');
-      const body: any = {
-        recordDate: formData.recordDate,
-        notes: formData.notes,
-      };
-      if (formData.weight) body.weight = parseFloat(formData.weight);
-      if (formData.heartRate) body.heartRate = parseInt(formData.heartRate, 10);
-      if (formData.bloodPressure) body.bloodPressure = formData.bloodPressure;
-      if (formData.temperature) body.temperature = parseFloat(formData.temperature);
-      if (formData.horseId) body.horse = formData.horseId;
-
-      await fetch(`${API_URL}/health-records`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({ data: body }),
-      });
-    } catch (err) {
-      console.warn('Create failed', err);
-    }
     await new Promise((r) => setTimeout(r, 500));
     setIsSubmitting(false);
     router.push('/health');
   };
 
-  const user = { name: '张三', email: 'zhangsan@example.com', avatar: null };
-
-  const horseOptions = [
-    { value: '', label: '选择马匹...' },
-    ...horses.map((h) => ({ value: String(h.id), label: h.name || `#${h.id}` })),
-  ];
-
   return (
-    <Layout user={user}>
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/health">
-          <Button variant="ghost" size="sm" leftIcon={<ArrowLeft className="w-4 h-4" />}>返回</Button>
-        </Link>
-        <div>
-          <h1 className="heading-2">新增健康数据</h1>
-          <p className="text-text-secondary">记录一次健康测量数据</p>
+    <MicrographicsLayout variant="light" fullWidth>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-10">
+          <Link href="/health">
+            <button className="w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:bg-gray-100" style={{ background: '#F5F5F5' }}>
+              <ArrowLeft className="w-5 h-5 text-black" />
+            </button>
+          </Link>
+          <div>
+            <h1 className="text-4xl font-bold text-black tracking-tight">Add Health Data</h1>
+            <p className="text-gray-500 mt-1">Record a health measurement</p>
+          </div>
         </div>
-      </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <Card>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-warning/10 rounded-lg flex items-center justify-center">
-                  <Activity className="w-5 h-5 text-warning" />
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-8">
+            {/* Health Data Form */}
+            <div className="rounded-2xl p-8" style={{ background: '#FFFFFF', border: '2px solid #E5E5E5', boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)' }}>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.1))' }}>
+                  <Activity className="w-6 h-6 text-amber-600" />
                 </div>
                 <div>
-                  <h2 className="heading-4">健康测量数据</h2>
-                  <p className="text-sm text-text-secondary">体重、心率、体温等</p>
+                  <h2 className="text-xl font-bold text-black">Health Measurements</h2>
+                  <p className="text-sm text-gray-500">Weight, heart rate, temperature, etc.</p>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
-                <Select
-                  label="关联马匹 *"
-                  name="horseId"
-                  value={formData.horseId}
-                  onChange={handleChange}
-                  required
-                  options={horseOptions}
-                />
-                <DatePicker
-                  label="日期 *"
-                  name="recordDate"
-                  value={formData.recordDate}
-                  onChange={handleChange}
-                  required
-                />
-                <Input
-                  label="体重 (kg)"
-                  name="weight"
-                  type="number"
-                  step="0.1"
-                  value={formData.weight}
-                  onChange={handleChange}
-                  placeholder="如：520"
-                />
-                <Input
-                  label="心率 (bpm)"
-                  name="heartRate"
-                  type="number"
-                  min={0}
-                  max={300}
-                  value={formData.heartRate}
-                  onChange={handleChange}
-                  placeholder="如：38"
-                />
-                <Input
-                  label="血压"
-                  name="bloodPressure"
-                  value={formData.bloodPressure}
-                  onChange={handleChange}
-                  placeholder="如：120/80"
-                />
-                <Input
-                  label="体温 (°C)"
-                  name="temperature"
-                  type="number"
-                  step="0.1"
-                  value={formData.temperature}
-                  onChange={handleChange}
-                  placeholder="如：37.8"
-                />
+              <div className="grid md:grid-cols-2 gap-5">
+                <Select label="Horse *" name="horseId" value={formData.horseId} options={[{ value: '', label: 'Select horse...' }]} required />
+                <DatePicker label="Date *" name="recordDate" value={formData.recordDate} required />
+                <div className="relative">
+                  <Scale className="absolute left-3 top-[38px] w-5 h-5 text-gray-400" />
+                  <Input label="Weight (kg)" name="weight" type="number" step="0.1" placeholder="e.g. 520" className="pl-10" />
+                </div>
+                <div className="relative">
+                  <Heart className="absolute left-3 top-[38px] w-5 h-5 text-gray-400" />
+                  <Input label="Heart Rate (bpm)" name="heartRate" type="number" min={0} max={300} placeholder="e.g. 38" className="pl-10" />
+                </div>
+                <Input label="Blood Pressure" name="bloodPressure" placeholder="e.g. 120/80" />
+                <div className="relative">
+                  <Thermometer className="absolute left-3 top-[38px] w-5 h-5 text-gray-400" />
+                  <Input label="Temperature (°C)" name="temperature" type="number" step="0.1" placeholder="e.g. 37.8" className="pl-10" />
+                </div>
               </div>
 
-              <div className="mt-4">
-                <Textarea
-                  label="备注"
-                  name="notes"
-                  value={formData.notes}
-                  onChange={handleChange}
-                  placeholder="补充说明..."
-                  rows={4}
-                />
+              <div className="mt-5">
+                <Textarea label="Notes" name="notes" placeholder="Additional notes about the horse's health..." rows={4} />
               </div>
-            </Card>
+            </div>
+
+            {/* Reference Ranges */}
+            <div className="rounded-2xl p-6" style={{ background: '#F8F8F8', border: '2px solid #E5E5E5' }}>
+              <h3 className="text-lg font-bold text-black mb-4">Reference Ranges</h3>
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { label: 'Weight', value: '400-700 kg', icon: Scale, color: '#E12E6D' },
+                  { label: 'Heart Rate', value: '28-40 bpm', icon: Heart, color: '#EF4444' },
+                  { label: 'Temperature', value: '37.5-38.5 °C', icon: Thermometer, color: '#F59E0B' },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center gap-3 p-4 rounded-xl" style={{ background: '#FFFFFF' }}>
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: `${item.color}15` }}>
+                      <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">{item.label}</p>
+                      <p className="text-sm font-semibold text-black">{item.value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-4">
+              <Button type="button" variant="secondary" className="px-6" onClick={() => router.back()}>
+                Cancel
+              </Button>
+              <Button type="submit" className="shadow-lg px-8" isLoading={isSubmitting}>
+                <Save className="w-4 h-4" /> Save Data
+              </Button>
+            </div>
           </div>
+        </form>
+      </div>
+    </MicrographicsLayout>
+  );
+}
 
-          <div className="space-y-6">
-            <Card>
-              <h3 className="heading-4 mb-4">操作</h3>
-              <div className="space-y-3">
-                <Button
-                  type="submit"
-                  className="w-full"
-                  isLoading={isSubmitting}
-                  leftIcon={<Save className="w-4 h-4" />}
-                >
-                  保存数据
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="w-full"
-                  onClick={() => router.back()}
-                >
-                  取消
-                </Button>
-              </div>
-            </Card>
-
-            <Card>
-              <h3 className="heading-4 mb-3">参考范围</h3>
-              <div className="text-sm text-text-secondary space-y-2">
-                <div>体重: 400-700 kg</div>
-                <div>心率: 28-40 bpm</div>
-                <div>体温: 37.5-38.5 °C</div>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </form>
-    </Layout>
+export default function NewHealthPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-pink-500" />
+      </div>
+    }>
+      <NewHealthContent />
+    </Suspense>
   );
 }

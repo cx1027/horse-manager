@@ -1,17 +1,19 @@
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: "default" | "primary" | "secondary" | "success" | "warning";
+  variant?: "default" | "primary" | "secondary" | "success" | "warning" | "error" | "info";
   size?: "sm" | "md";
   className?: string;
 }
 
 export default function Badge({ children, variant = "default", size = "sm", className = "" }: BadgeProps) {
   const variants = {
-    default: "bg-background-primary text-text-secondary",
+    default: "bg-background-secondary text-text-secondary",
     primary: "bg-primary-soft text-primary",
-    secondary: "bg-secondary/10 text-secondary",
-    success: "bg-green-100 text-green-600",
-    warning: "bg-yellow-100 text-yellow-600",
+    secondary: "bg-secondary/20 text-secondary",
+    success: "bg-success-soft text-success",
+    warning: "bg-warning-soft text-warning",
+    error: "bg-error-soft text-error",
+    info: "bg-info-soft text-info",
   };
 
   const sizes = {

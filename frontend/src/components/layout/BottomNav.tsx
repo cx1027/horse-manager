@@ -15,23 +15,25 @@ const BottomNav: React.FC<BottomNavProps> = ({ userRole = 'user' }) => {
   const pathname = usePathname();
 
   const navItems = [
-    { id: 'home', label: '首页', icon: Home, href: '/' },
-    { id: 'search', label: '搜索', icon: Search, href: '/horses' },
+    { id: 'home', label: 'Home', icon: Home, href: '/' },
+    { id: 'search', label: 'Search', icon: Search, href: '/horses' },
     { id: 'add', label: '', icon: Plus, href: '/horses/new', isCenter: true },
-    { id: 'activity', label: '活动', icon: Activity, href: '/health' },
-    { id: 'profile', label: '我的', icon: User, href: '/profile' },
+    { id: 'activity', label: 'Health', icon: Activity, href: '/health' },
+    { id: 'profile', label: 'Profile', icon: User, href: '/profile' },
   ];
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-pb">
-      <div 
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bottom-nav">
+      <div
         className="flex items-center justify-around h-[80px] px-4"
         style={{
-          background: 'rgba(30, 30, 30, 0.95)',
+          background: 'rgba(15, 15, 15, 0.95)',
+          backdropFilter: 'blur(12px)',
           borderRadius: '28px 28px 0 0',
           paddingBottom: 'env(safe-area-inset-bottom)',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
         }}
       >
         {navItems.map((item) => {
@@ -42,7 +44,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ userRole = 'user' }) => {
                 href={item.href}
                 className="flex items-center justify-center -mt-6"
               >
-                <div 
+                <div
                   className="w-16 h-16 rounded-full flex items-center justify-center"
                   style={{
                     background: 'linear-gradient(135deg, #E12E6D, #A855F7)',
@@ -62,11 +64,11 @@ const BottomNav: React.FC<BottomNavProps> = ({ userRole = 'user' }) => {
               href={item.href}
               className="flex flex-col items-center justify-center gap-1 min-w-[64px] py-2"
             >
-              <item.icon 
-                className="w-6 h-6 transition-colors" 
+              <item.icon
+                className="w-6 h-6 transition-colors"
                 style={{ color: active ? '#E12E6D' : '#6B6B6B' }}
               />
-              <span 
+              <span
                 className="text-xs font-medium transition-colors"
                 style={{ color: active ? '#E12E6D' : '#6B6B6B' }}
               >

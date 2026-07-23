@@ -56,7 +56,7 @@ module.exports = createCoreController('plugin::users-permissions.user', ({ strap
       });
 
       // 生成 JWT
-      const jwt = strapi.service('plugin::users-permissions.jwt').issue({ id: user.id });
+      const jwt = await strapi.plugin('users-permissions').services.jwt.issue({ id: user.id });
 
       ctx.body = {
         jwt,

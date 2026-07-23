@@ -2,22 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+
+/* Custom Fonts for Micrographics */
+@font-face {
+  font-family: '42dot Sans';
+  src: url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: '42dot Sans';
+  src: url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
-  --color-background-primary: #F0F0F0;
-  --color-background-secondary: #FAFAFA;
-  --color-surface: #FFFFFF;
-  --color-surface-elevated: #FFFFFF;
+  /* Brand Colors */
   --color-primary: #F05050;
   --color-primary-soft: #F8C0C8;
-  --color-secondary: #B07060;
-  --color-accent: #E85D5D;
-  --color-text-primary: #101010;
-  --color-text-secondary: #808080;
-  --color-text-muted: #A0A0A0;
-  --color-border: #E6E6E6;
-  --color-border-subtle: #F0F0F0;
+  --color-accent: #E12E6D;
+  --color-accent-light: #F472B6;
+  --color-accent-soft: #FADADA;
+  --color-secondary: #A855F7;
+
+  /* Background Colors (Dark) */
+  --color-background-primary: #0F0F0F;
+  --color-background-secondary: #1A1A1A;
+  --color-background-card: #1E1E1E;
+  --color-background-elevated: #2A2A2A;
+  --color-background-subtle: #242424;
+
+  /* Surface */
+  --color-surface: #FFFFFF;
+  --color-surface-primary: #1E1E1E;
+  --color-surface-secondary: #2A2A2A;
+  --color-surface-elevated: #F5F5F5;
+
+  /* Text */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #A0A0A0;
+  --color-text-muted: #6B6B6B;
+  --color-text-inverse: #0F0F0F;
+  --color-text-tertiary: #4B5563;
+
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-emphasis: rgba(255, 255, 255, 0.2);
+
+  /* Semantic */
+  --color-success: #10B981;
+  --color-success-soft: rgba(16, 185, 129, 0.15);
+  --color-warning: #F59E0B;
+  --color-warning-soft: rgba(245, 158, 11, 0.15);
+  --color-error: #EF4444;
+  --color-error-soft: rgba(239, 68, 68, 0.15);
+  --color-info: #2A82EB;
+  --color-info-soft: rgba(42, 130, 235, 0.15);
 }
 
 * {
@@ -40,6 +87,22 @@ body {
   min-height: 100dvh;
 }
 
+@layer utilities {
+  /* Micrographics Typography */
+  .font-42dot-sans {
+    font-family: 'DM Sans', '42dot Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .font-42dot-sans-light {
+    font-family: 'DM Sans', '42dot Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 300;
+  }
+
+  .font-instrument-serif {
+    font-family: 'Instrument Serif', Georgia, serif;
+  }
+}
+
 @supports (padding-top: env(safe-area-inset-top)) {
   body {
     padding-top: env(safe-area-inset-top);
@@ -59,7 +122,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--color-border-emphasis);
   border-radius: 2px;
 }
 
@@ -69,63 +132,122 @@ body {
 
 @layer components {
   .card {
-    @apply bg-surface rounded-2xl p-4 shadow-card;
+    @apply bg-background-card rounded-xl border border-border;
   }
-  
+
   .btn {
-    @apply inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent/30 disabled:opacity-50 disabled:cursor-not-allowed;
   }
-  
+
   .btn-primary {
-    @apply btn bg-primary text-white rounded-full px-6 py-3 hover:bg-primary-600 active:bg-primary-700 shadow-button;
+    @apply btn text-white rounded-full px-6 py-3 shadow-button;
+    background: linear-gradient(135deg, #E12E6D, #A855F7);
   }
-  
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #D42662, #9333EA);
+  }
+
   .btn-secondary {
-    @apply btn bg-surface text-text-primary rounded-full px-6 py-3 border border-border hover:bg-background-primary active:bg-background-primary;
+    @apply btn bg-background-card text-text-primary rounded-full px-6 py-3 border border-border hover:bg-background-elevated;
   }
-  
+
   .btn-ghost {
-    @apply btn bg-transparent text-text-secondary hover:bg-background-primary active:bg-background-secondary;
+    @apply btn bg-transparent text-text-secondary hover:bg-background-secondary;
   }
-  
+
   .btn-danger {
-    @apply btn bg-primary text-white rounded-full px-6 py-3 hover:bg-primary-600;
+    @apply btn bg-error text-white rounded-full px-6 py-3 shadow-button;
   }
-  
+
   .input {
-    @apply w-full bg-surface border border-border rounded-full px-4 py-3 text-text-primary placeholder:text-text-muted transition-all;
+    @apply w-full border rounded-full px-4 py-3 text-text-primary placeholder:text-text-muted transition-all;
+    background: var(--color-background-card);
+    border-color: var(--color-border);
   }
-  
+
   .input:focus {
-    @apply outline-none border-primary ring-2 ring-primary/10;
+    @apply outline-none ring-2;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(225, 46, 109, 0.15);
   }
-  
+
   .page {
-    @apply min-h-screen bg-background-primary pb-20;
+    @apply min-h-screen pb-20;
   }
-  
+
   .page-content {
     @apply p-4 space-y-4;
   }
-  
+
   .icon-wrapper {
-    @apply flex items-center justify-center rounded-2xl;
+    @apply flex items-center justify-center rounded-xl;
   }
-  
+
   .badge {
-    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
-  
+
   .badge-primary {
     @apply badge bg-primary-soft text-primary;
   }
-  
+
   .badge-secondary {
-    @apply badge bg-secondary/10 text-secondary;
+    @apply badge bg-secondary/20 text-secondary;
   }
-  
+
+  .badge-success {
+    @apply badge bg-success-soft text-success;
+  }
+
+  .badge-warning {
+    @apply badge bg-warning-soft text-warning;
+  }
+
+  .badge-error {
+    @apply badge bg-error-soft text-error;
+  }
+
   .bottom-nav {
     padding-bottom: max(env(safe-area-inset-bottom), 16px);
+  }
+
+  /* Decorative gradient circles */
+  .gradient-orb {
+    @apply fixed rounded-full pointer-events-none;
+  }
+
+  .gradient-orb-accent {
+    background: radial-gradient(circle, #E12E6D 0%, transparent 70%);
+  }
+
+  .gradient-orb-secondary {
+    background: radial-gradient(circle, #A855F7 0%, transparent 70%);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(135deg, #E12E6D, #F472B6);
+  }
+
+  /* Glass effect */
+  .glass {
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Label utility */
+  .label {
+    @apply block text-sm font-medium text-text-secondary mb-1.5;
+  }
+
+  /* Error text utility */
+  .error-text {
+    @apply text-xs text-error mt-1;
   }
 }
 
@@ -149,15 +271,17 @@ body {
 }
 
 .progress-bar {
-  @apply h-1 bg-border rounded-full overflow-hidden;
+  @apply h-1 rounded-full overflow-hidden;
+  background: var(--color-border);
 }
 
 .progress-bar-fill {
-  @apply h-full bg-primary rounded-full transition-all duration-300;
+  @apply h-full rounded-full transition-all duration-300;
+  background: linear-gradient(90deg, #E12E6D, #F472B6);
 }
 
 .list-item {
-  @apply flex items-center gap-3 p-4 bg-surface rounded-2xl shadow-card;
+  @apply flex items-center gap-3 p-4 bg-background-card rounded-xl border border-border;
 }
 
 .empty-state {
@@ -165,9 +289,10 @@ body {
 }
 
 .overlay {
-  @apply fixed inset-0 bg-black/40 z-40;
+  @apply fixed inset-0 z-40;
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .modal {
-  @apply fixed bottom-0 left-0 right-0 bg-surface rounded-t-3xl p-6 z-50 max-h-[90vh] overflow-auto;
+  @apply fixed bottom-0 left-0 right-0 bg-background-card rounded-t-3xl p-6 z-50 max-h-[90vh] overflow-auto;
 }

@@ -3,15 +3,16 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, Bell, User, Menu, X, ChevronDown, LogOut } from 'lucide-react';
+import { Search, Bell, Menu, X, ChevronDown, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Avatar from '../ui/Avatar';
 import Button from '../ui/Button';
 
 interface HeaderProps {
   user?: {
-    name: string;
-    email: string;
+    name?: string;
+    username?: string;
+    email?: string;
     avatar?: string | null;
   } | null;
   onMenuClick?: () => void;
@@ -31,12 +32,12 @@ const Header: React.FC<HeaderProps> = ({ user: propUser, onMenuClick, isMenuOpen
       }
     };
     loadUser();
-    
+
     window.addEventListener('storage', loadUser);
     return () => window.removeEventListener('storage', loadUser);
   }, []);
 
-  const displayName = user?.name || user?.email?.split('@')[0] || '用户';
+  const displayName = user?.name || user?.username || user?.email?.split('@')[0] || 'User';
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -45,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ user: propUser, onMenuClick, isMenuOpen
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-background-primary/80 backdrop-blur-lg border-b border-border">
+    <header className="sticky top-0 z-40 glass border-b border-border">
       <div className="page-container">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -57,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({ user: propUser, onMenuClick, isMenuOpen
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
             <Link href="/dashboard" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent-light rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #E12E6D, #A855F7)', boxShadow: '0 4px 20px rgba(225, 46, 109, 0.4)' }}>
                 <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C8.5 2 6 5 6 8c0 2 1 3 2 4l-1 8h10l-1-8c1-1 2-2 2-4 0-3-2.5-6-6-6zm0 2c2.5 0 4 2 4 4s-1.5 3-4 3-4-1-4-3 1.5-4 4-4z"/>
                 </svg>
@@ -73,46 +74,50 @@ const Header: React.FC<HeaderProps> = ({ user: propUser, onMenuClick, isMenuOpen
             <Link
               href="/dashboard"
               className={cn(
-                'px-4 py-2 rounded-button text-sm font-medium transition-colors',
+                'px-4 py-2 rounded-xl text-sm font-medium transition-colors',
                 pathname === '/dashboard'
-                  ? 'bg-accent text-white'
+                  ? 'text-white'
                   : 'text-text-secondary hover:text-text-primary hover:bg-background-secondary'
               )}
+              style={pathname === '/dashboard' ? { background: 'linear-gradient(135deg, #E12E6D, #A855F7)' } : undefined}
             >
-              仪表盘
+              Dashboard
             </Link>
             <Link
               href="/horses"
               className={cn(
-                'px-4 py-2 rounded-button text-sm font-medium transition-colors',
+                'px-4 py-2 rounded-xl text-sm font-medium transition-colors',
                 pathname.startsWith('/horses')
-                  ? 'bg-accent text-white'
+                  ? 'text-white'
                   : 'text-text-secondary hover:text-text-primary hover:bg-background-secondary'
               )}
+              style={pathname.startsWith('/horses') ? { background: 'linear-gradient(135deg, #E12E6D, #A855F7)' } : undefined}
             >
-              马匹
+              Horses
             </Link>
             <Link
               href="/medical"
               className={cn(
-                'px-4 py-2 rounded-button text-sm font-medium transition-colors',
+                'px-4 py-2 rounded-xl text-sm font-medium transition-colors',
                 pathname.startsWith('/medical')
-                  ? 'bg-accent text-white'
+                  ? 'text-white'
                   : 'text-text-secondary hover:text-text-primary hover:bg-background-secondary'
               )}
+              style={pathname.startsWith('/medical') ? { background: 'linear-gradient(135deg, #E12E6D, #A855F7)' } : undefined}
             >
-              医疗记录
+              Medical
             </Link>
             <Link
               href="/activities"
               className={cn(
-                'px-4 py-2 rounded-button text-sm font-medium transition-colors',
+                'px-4 py-2 rounded-xl text-sm font-medium transition-colors',
                 pathname.startsWith('/activities')
-                  ? 'bg-accent text-white'
+                  ? 'text-white'
                   : 'text-text-secondary hover:text-text-primary hover:bg-background-secondary'
               )}
+              style={pathname.startsWith('/activities') ? { background: 'linear-gradient(135deg, #E12E6D, #A855F7)' } : undefined}
             >
-              商业活动
+              Activities
             </Link>
           </nav>
 
@@ -124,7 +129,7 @@ const Header: React.FC<HeaderProps> = ({ user: propUser, onMenuClick, isMenuOpen
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-64 sm:w-80">
                   <input
                     type="text"
-                    placeholder="搜索马匹..."
+                    placeholder="Search horses..."
                     className="input pr-10"
                     autoFocus
                     onBlur={() => setIsSearchOpen(false)}
@@ -143,54 +148,54 @@ const Header: React.FC<HeaderProps> = ({ user: propUser, onMenuClick, isMenuOpen
             {/* Notifications */}
             <button className="relative p-2 text-text-secondary hover:text-text-primary">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full" style={{ background: '#E12E6D' }} />
             </button>
 
             {/* User Menu */}
             {user ? (
               <div className="relative group">
-                <button className="flex items-center gap-2 p-2 rounded-button hover:bg-background-secondary">
-                  <Avatar src={user.avatar} name={displayName} size="sm" />
+                <button className="flex items-center gap-2 p-2 rounded-xl hover:bg-background-secondary">
+                  <Avatar src={user.avatar} fallback={displayName} size="sm" />
                   <span className="hidden sm:block text-sm font-medium text-text-primary">
                     {displayName}
                   </span>
                   <ChevronDown className="w-4 h-4 text-text-secondary" />
                 </button>
-                <div className="absolute right-0 top-full mt-2 w-48 py-2 bg-background-card rounded-card border border-border shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                <div className="absolute right-0 top-full mt-2 w-48 py-2 rounded-xl bg-background-card border border-border shadow-dropdown opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                   <Link
                     href="/profile"
-                    className="block px-4 py-2 text-sm text-text-secondary hover:bg-background-secondary"
+                    className="block px-4 py-2 text-sm text-text-secondary hover:bg-background-elevated"
                   >
-                    个人资料
+                    Profile
                   </Link>
                   <Link
                     href="/settings"
-                    className="block px-4 py-2 text-sm text-text-secondary hover:bg-background-secondary"
+                    className="block px-4 py-2 text-sm text-text-secondary hover:bg-background-elevated"
                   >
-                    设置
+                    Settings
                   </Link>
-                  {user.email.includes('admin') && (
+                  {user.email?.includes('admin') && (
                     <Link
                       href="/admin"
-                      className="block px-4 py-2 text-sm text-text-secondary hover:bg-background-secondary"
+                      className="block px-4 py-2 text-sm text-text-secondary hover:bg-background-elevated"
                     >
-                      管理后台
+                      Admin
                     </Link>
                   )}
-                  <div className="border-t border-border mt-2 pt-2">
-                    <button 
+                  <div className="border-t mt-2 pt-2" style={{ borderColor: 'var(--color-border)' }}>
+                    <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-error hover:bg-background-secondary flex items-center gap-2"
+                      className="w-full text-left px-4 py-2 text-sm text-error hover:bg-background-elevated flex items-center gap-2"
                     >
                       <LogOut className="w-4 h-4" />
-                      退出登录
+                      Logout
                     </button>
                   </div>
                 </div>
               </div>
             ) : (
               <Link href="/login">
-                <Button size="sm">登录</Button>
+                <Button size="sm">Login</Button>
               </Link>
             )}
           </div>

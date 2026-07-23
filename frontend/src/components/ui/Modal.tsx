@@ -20,12 +20,12 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       />
 
       <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative w-full max-w-md rounded-3xl bg-surface p-6 shadow-elevated transform transition-all">
+        <div className="relative w-full max-w-md rounded-2xl bg-background-card p-6 shadow-dropdown transform transition-all">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-text-primary">{title}</h2>
             <button
               onClick={onClose}
-              className="rounded-full p-2 text-text-muted hover:bg-background-primary hover:text-text-primary transition-colors"
+              className="rounded-full p-2 text-text-muted hover:bg-background-elevated hover:text-text-primary transition-colors"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

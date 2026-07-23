@@ -1,25 +1,23 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Layout from '@/components/layout/Layout';
-import Card from '@/components/ui/Card';
+import MicrographicsLayout from '@/components/layout/MicrographicsLayout';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Avatar from '@/components/ui/Avatar';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Building, 
-  Shield, 
+import {
+  User,
+  Mail,
+  Phone,
+  Building,
+  Shield,
   Bell,
-  Eye,
-  EyeOff,
   Save,
-  Loader2
+  Loader2,
+  Key,
+  Smartphone,
+  AlertTriangle
 } from 'lucide-react';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337/api';
 
 interface UserData {
   id: number;
@@ -32,7 +30,6 @@ interface UserData {
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -50,22 +47,22 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#E12E6D' }} />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <Layout user={null}>
+      <MicrographicsLayout variant="dark">
         <div className="flex items-center justify-center min-h-[50vh]">
-          <p className="text-text-secondary">请先登录</p>
+          <p className="text-white">Please log in first</p>
         </div>
-      </Layout>
+      </MicrographicsLayout>
     );
   }
 
-  const displayName = user.username || user.email?.split('@')[0] || '用户';
+  const displayName = user.username || user.email?.split('@')[0] || 'User';
 
   const notifications = {
     email: true,
@@ -75,191 +72,174 @@ export default function ProfilePage() {
   };
 
   return (
-    <Layout user={user}>
-      {/* Page Header */}
-      <div className="mb-6">
-        <h1 className="heading-2 mb-2">个人资料</h1>
-        <p className="text-text-secondary">管理您的账号信息</p>
-      </div>
-
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Profile Card */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Basic Info */}
-          <Card>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="heading-4">基本信息</h2>
-              <Button 
-                variant="secondary" 
-                size="sm"
-                onClick={() => setIsEditing(!isEditing)}
-              >
-                {isEditing ? '取消' : '编辑'}
-              </Button>
-            </div>
-
-            <div className="flex items-start gap-6 mb-6">
-              <Avatar src={null} name={displayName} size="xl" />
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-text-primary mb-1">{displayName}</h3>
-                <Badge variant={user.role === 'admin' ? 'primary' : user.role === 'investor' ? 'success' : 'secondary'}>
-                  {user.role === 'admin' ? '管理员' : user.role === 'staff' ? '员工' : user.role === 'investor' ? '投资者' : '用户'}
-                </Badge>
-                <p className="text-sm text-text-secondary mt-2">
-                  注册用户
-                </p>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="flex items-center gap-3 p-4 bg-background-secondary rounded-xl">
-                <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
-                  <User className="w-5 h-5 text-accent" />
-                </div>
-                <div>
-                  <p className="text-sm text-text-secondary">用户名</p>
-                  <p className="text-text-primary font-medium">{displayName}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-4 bg-background-secondary rounded-xl">
-                <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
-                  <Mail className="w-5 h-5 text-success" />
-                </div>
-                <div>
-                  <p className="text-sm text-text-secondary">邮箱</p>
-                  <p className="text-text-primary font-medium">{user.email}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-4 bg-background-secondary rounded-xl">
-                <div className="w-10 h-10 bg-warning/10 rounded-lg flex items-center justify-center">
-                  <Phone className="w-5 h-5 text-warning" />
-                </div>
-                <div>
-                  <p className="text-sm text-text-secondary">电话</p>
-                  <p className="text-text-primary font-medium">{user.phone || '未设置'}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-4 bg-background-secondary rounded-xl">
-                <div className="w-10 h-10 bg-error/10 rounded-lg flex items-center justify-center">
-                  <Building className="w-5 h-5 text-error" />
-                </div>
-                <div>
-                  <p className="text-sm text-text-secondary">公司</p>
-                  <p className="text-text-primary font-medium">{user.company || '未设置'}</p>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Security */}
-          <Card>
-            <div className="flex items-center gap-3 mb-6">
-              <Shield className="w-5 h-5 text-accent" />
-              <h2 className="heading-4">安全设置</h2>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-background-secondary rounded-xl">
-                <div>
-                  <p className="text-text-primary font-medium">密码</p>
-                  <p className="text-sm text-text-secondary">上次修改于 30 天前</p>
-                </div>
-                <Button variant="secondary" size="sm">修改密码</Button>
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-background-secondary rounded-xl">
-                <div>
-                  <p className="text-text-primary font-medium">双因素认证</p>
-                  <p className="text-sm text-text-secondary">为您的账号添加额外的安全保护</p>
-                </div>
-                <Button variant="secondary" size="sm">启用</Button>
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-background-secondary rounded-xl">
-                <div>
-                  <p className="text-text-primary font-medium">Google 登录</p>
-                  <p className="text-sm text-text-secondary">已关联 Google 账号</p>
-                </div>
-                <Badge variant="success">已连接</Badge>
-              </div>
-            </div>
-          </Card>
+    <MicrographicsLayout variant="dark" fullWidth>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Page Header */}
+        <div className="mb-12">
+          <h1 className="text-5xl font-bold text-white mb-3 tracking-tight">Profile</h1>
+          <p className="text-lg text-gray-400">Manage your account settings and preferences</p>
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Notifications */}
-          <Card>
-            <div className="flex items-center gap-3 mb-6">
-              <Bell className="w-5 h-5 text-accent" />
-              <h2 className="heading-4">通知设置</h2>
+        <div className="grid lg:grid-cols-12 gap-8">
+          {/* Left Column - Profile Info */}
+          <div className="lg:col-span-7 space-y-8">
+            {/* Profile Card */}
+            <div className="rounded-2xl p-8" style={{ background: 'linear-gradient(135deg, rgba(225, 46, 109, 0.15), rgba(168, 85, 247, 0.1))', border: '1px solid rgba(225, 46, 109, 0.3)' }}>
+              <div className="flex items-start gap-6">
+                <Avatar src={null} fallback={displayName} size="2xl" />
+                <div className="flex-1">
+                  <div className="flex items-center gap-4 mb-2">
+                    <h2 className="text-3xl font-bold text-white">{displayName}</h2>
+                    <Badge variant={user.role === 'investor' ? 'success' : 'primary'}>
+                      {user.role === 'staff' ? 'Staff' : user.role === 'investor' ? 'Investor' : 'User'}
+                    </Badge>
+                  </div>
+                  <p className="text-gray-400">Registered user</p>
+                </div>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setIsEditing(!isEditing)}
+                  className="border-white/20"
+                >
+                  {isEditing ? 'Cancel' : 'Edit Profile'}
+                </Button>
+              </div>
+
+              {/* Info Grid */}
+              <div className="grid grid-cols-2 gap-4 mt-8">
+                <div className="flex items-center gap-3 p-4 rounded-xl" style={{ background: 'rgba(0, 0, 0, 0.4)' }}>
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(225, 46, 109, 0.2)' }}>
+                    <User className="w-5 h-5 text-pink-500" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Username</p>
+                    <p className="text-white font-medium">{displayName}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-4 rounded-xl" style={{ background: 'rgba(0, 0, 0, 0.4)' }}>
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(16, 185, 129, 0.2)' }}>
+                    <Mail className="w-5 h-5 text-emerald-500" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Email</p>
+                    <p className="text-white font-medium text-sm">{user.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-4 rounded-xl" style={{ background: 'rgba(0, 0, 0, 0.4)' }}>
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(245, 158, 11, 0.2)' }}>
+                    <Phone className="w-5 h-5 text-amber-500" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Phone</p>
+                    <p className="text-white font-medium">{user.phone || 'Not set'}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-4 rounded-xl" style={{ background: 'rgba(0, 0, 0, 0.4)' }}>
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(168, 85, 247, 0.2)' }}>
+                    <Building className="w-5 h-5 text-purple-500" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Company</p>
+                    <p className="text-white font-medium">{user.company || 'Not set'}</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              <label className="flex items-center justify-between p-3 bg-background-secondary rounded-xl cursor-pointer hover:bg-background-primary transition-colors">
-                <div>
-                  <p className="text-text-primary font-medium">邮件通知</p>
-                  <p className="text-xs text-text-secondary">接收邮件更新</p>
+            {/* Security Section */}
+            <div className="rounded-2xl p-8" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(225, 46, 109, 0.15)' }}>
+                  <Shield className="w-5 h-5 text-pink-500" />
                 </div>
-                <input 
-                  type="checkbox" 
-                  defaultChecked={notifications.email}
-                  className="w-5 h-5 rounded border-border bg-background-secondary text-accent focus:ring-accent"
-                />
-              </label>
+                <div>
+                  <h2 className="text-xl font-semibold text-white">Security</h2>
+                  <p className="text-sm text-gray-500">Manage your security settings</p>
+                </div>
+              </div>
 
-              <label className="flex items-center justify-between p-3 bg-background-secondary rounded-xl cursor-pointer hover:bg-background-primary transition-colors">
-                <div>
-                  <p className="text-text-primary font-medium">推送通知</p>
-                  <p className="text-xs text-text-secondary">接收应用内通知</p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-4 rounded-xl transition-colors cursor-pointer hover:bg-white/5">
+                  <div className="flex items-center gap-4">
+                    <Key className="w-5 h-5 text-gray-400" />
+                    <div>
+                      <p className="text-white font-medium">Password</p>
+                      <p className="text-xs text-gray-500">Last changed 30 days ago</p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" className="text-pink-500">Change</Button>
                 </div>
-                <input 
-                  type="checkbox" 
-                  defaultChecked={notifications.push}
-                  className="w-5 h-5 rounded border-border bg-background-secondary text-accent focus:ring-accent"
-                />
-              </label>
 
-              <label className="flex items-center justify-between p-3 bg-background-secondary rounded-xl cursor-pointer hover:bg-background-primary transition-colors">
-                <div>
-                  <p className="text-text-primary font-medium">保险提醒</p>
-                  <p className="text-xs text-text-secondary">保险即将到期提醒</p>
+                <div className="flex items-center justify-between p-4 rounded-xl transition-colors cursor-pointer hover:bg-white/5">
+                  <div className="flex items-center gap-4">
+                    <Smartphone className="w-5 h-5 text-gray-400" />
+                    <div>
+                      <p className="text-white font-medium">Two-Factor Auth</p>
+                      <p className="text-xs text-gray-500">Add extra security</p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" className="text-pink-500">Enable</Button>
                 </div>
-                <input 
-                  type="checkbox" 
-                  defaultChecked={notifications.insurance}
-                  className="w-5 h-5 rounded border-border bg-background-secondary text-accent focus:ring-accent"
-                />
-              </label>
-
-              <label className="flex items-center justify-between p-3 bg-background-secondary rounded-xl cursor-pointer hover:bg-background-primary transition-colors">
-                <div>
-                  <p className="text-text-primary font-medium">疫苗提醒</p>
-                  <p className="text-xs text-text-secondary">疫苗接种提醒</p>
-                </div>
-                <input 
-                  type="checkbox" 
-                  defaultChecked={notifications.vaccination}
-                  className="w-5 h-5 rounded border-border bg-background-secondary text-accent focus:ring-accent"
-                />
-              </label>
+              </div>
             </div>
-          </Card>
+          </div>
 
-          {/* Danger Zone */}
-          <Card className="border-error/30">
-            <h2 className="heading-4 mb-4 text-error">危险区域</h2>
-            <div className="space-y-3">
-              <Button variant="secondary" className="w-full">
-                导出我的数据
-              </Button>
-              <Button variant="danger" className="w-full">
-                删除账号
-              </Button>
+          {/* Right Column - Settings */}
+          <div className="lg:col-span-5 space-y-8">
+            {/* Notifications */}
+            <div className="rounded-2xl p-8" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(168, 85, 247, 0.15)' }}>
+                  <Bell className="w-5 h-5 text-purple-500" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-white">Notifications</h2>
+                  <p className="text-sm text-gray-500">Manage your alerts</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { key: 'email', label: 'Email Notifications', desc: 'Receive email updates' },
+                  { key: 'push', label: 'Push Notifications', desc: 'In-app notifications' },
+                  { key: 'insurance', label: 'Insurance Reminders', desc: 'Policy expiry alerts' },
+                  { key: 'vaccination', label: 'Vaccination Reminders', desc: 'Vaccination alerts' },
+                ].map((item) => (
+                  <label key={item.key} className="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors hover:bg-white/5">
+                    <div>
+                      <p className="text-white font-medium">{item.label}</p>
+                      <p className="text-xs text-gray-500">{item.desc}</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      defaultChecked={notifications[item.key as keyof typeof notifications]}
+                      className="w-5 h-5 rounded"
+                      style={{ accentColor: '#E12E6D' }}
+                    />
+                  </label>
+                ))}
+              </div>
             </div>
-          </Card>
+
+            {/* Danger Zone */}
+            <div className="rounded-2xl p-8" style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+              <div className="flex items-center gap-3 mb-4">
+                <AlertTriangle className="w-5 h-5 text-red-500" />
+                <h2 className="text-lg font-semibold text-white">Danger Zone</h2>
+              </div>
+              <div className="space-y-3">
+                <Button variant="secondary" className="w-full border-white/20">
+                  Export My Data
+                </Button>
+                <Button variant="danger" className="w-full">
+                  Delete Account
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </Layout>
+    </MicrographicsLayout>
   );
 }

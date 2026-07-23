@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react';
-import HorseIcon from '@/components/ui/HorseIcon';
+import { Eye, EyeOff, ArrowRight } from 'lucide-react';
+import MicrographicsLayout from '@/components/layout/MicrographicsLayout';
+import Image from 'next/image';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337/api';
 
@@ -39,7 +40,7 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error?.message || '登录失败');
+        throw new Error(data.error?.message || 'Login failed');
       }
 
       localStorage.setItem('authToken', data.jwt);
@@ -51,78 +52,35 @@ export default function LoginPage() {
       }));
       router.push('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : '登录失败，请稍后重试');
+      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div 
-      className="min-h-screen flex"
-      style={{ background: '#121212' }}
-    >
-      {/* Left Side - Decorative */}
-      <div 
-        className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 relative overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, #1a0a15 0%, #0f0f23 100%)'
-        }}
-      >
-        {/* Decorative circles */}
-        <div 
-          className="absolute w-[400px] h-[400px] rounded-full opacity-30"
-          style={{ 
-            background: 'radial-gradient(circle, #E12E6D 0%, transparent 70%)',
-            top: '10%',
-            left: '20%'
-          }}
-        />
-        <div 
-          className="absolute w-[300px] h-[300px] rounded-full opacity-20"
-          style={{ 
-            background: 'radial-gradient(circle, #A855F7 0%, transparent 70%)',
-            bottom: '15%',
-            right: '10%'
-          }}
-        />
-        
-        <div className="relative z-10 text-center">
-          <div 
-            className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8"
-            style={{ 
-              background: 'linear-gradient(135deg, #E12E6D, #A855F7)',
-              boxShadow: '0 8px 32px rgba(225, 46, 109, 0.4)'
-            }}
-          >
-            <HorseIcon className="w-14 h-14 text-white" />
-          </div>
-          <h2 className="text-4xl font-bold text-white mb-4">HorseInfo</h2>
-          <p className="text-lg max-w-md" style={{ color: '#A0A0A0' }}>
-            专业的马匹信息管理平台，让您的马匹管理更加轻松便捷
-          </p>
-        </div>
-      </div>
-
-      {/* Right Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-md">
-          {/* Mobile Logo */}
-          <div className="lg:hidden text-center mb-8">
-            <div 
-              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ 
-                background: 'linear-gradient(135deg, #E12E6D, #A855F7)',
-                boxShadow: '0 4px 20px rgba(225, 46, 109, 0.4)'
-              }}
+    <MicrographicsLayout variant="light">
+      {/* Login Form Container */}
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <div className="w-full max-w-md relative">
+          {/* Logo */}
+          <div className="flex items-center justify-center mb-6">
+            <div
+              className="relative w-[200px] h-[160px]"
             >
-              <HorseIcon className="w-10 h-10 text-white" />
+              <Image
+                src="/images/background.webp"
+                alt=""
+                fill
+                className="object-contain"
+                unoptimized
+              />
             </div>
           </div>
 
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">欢迎回来</h1>
-            <p style={{ color: '#6B6B6B' }}>登录您的账号以继续</p>
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-bold mb-2" style={{ color: '#000000' }}>Welcome Back</h1>
+            <p style={{ color: '#666666' }}>Sign in to your account to continue</p>
           </div>
 
           {/* Google Sign In */}
@@ -130,10 +88,10 @@ export default function LoginPage() {
             onClick={handleGoogleLogin}
             disabled={isLoading}
             className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-medium transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed mb-6"
-            style={{ 
-              background: 'rgba(255,255,255,0.1)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: 'white'
+            style={{
+              background: 'rgba(0,0,0,0.05)',
+              border: '1px solid rgba(0,0,0,0.1)',
+              color: '#000000'
             }}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -142,21 +100,21 @@ export default function LoginPage() {
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            使用 Google 登录
+            Continue with Google
           </button>
 
           {/* Divider */}
           <div className="flex items-center gap-4 mb-6">
-            <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.1)' }} />
-            <span className="text-sm" style={{ color: '#6B6B6B' }}>或</span>
-            <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.1)' }} />
+            <div className="flex-1 h-px" style={{ background: 'rgba(0,0,0,0.1)' }} />
+            <span className="text-sm" style={{ color: '#666666' }}>or</span>
+            <div className="flex-1 h-px" style={{ background: 'rgba(0,0,0,0.1)' }} />
           </div>
 
           {/* Email Login Form */}
           <form onSubmit={handleEmailLogin} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: '#A0A0A0' }}>
-                邮箱地址
+              <label className="block text-sm font-medium mb-2" style={{ color: '#666666' }}>
+                Email Address
               </label>
               <input
                 type="email"
@@ -165,41 +123,41 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-4 rounded-xl outline-none transition-all"
-                style={{ 
-                  background: '#1E1E1E',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: 'white'
+                style={{
+                  background: 'rgba(0,0,0,0.03)',
+                  border: '1px solid rgba(0,0,0,0.1)',
+                  color: '#000000'
                 }}
                 onFocus={(e) => e.target.style.borderColor = '#E12E6D'}
-                onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                onBlur={(e) => e.target.style.borderColor = 'rgba(0,0,0,0.1)'}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: '#A0A0A0' }}>
-                密码
+              <label className="block text-sm font-medium mb-2" style={{ color: '#666666' }}>
+                Password
               </label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="输入密码"
+                  placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="w-full px-4 py-4 pr-12 rounded-xl outline-none transition-all"
-                  style={{ 
-                    background: '#1E1E1E',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    color: 'white'
+                  style={{
+                    background: 'rgba(0,0,0,0.03)',
+                    border: '1px solid rgba(0,0,0,0.1)',
+                    color: '#000000'
                   }}
                   onFocus={(e) => e.target.style.borderColor = '#E12E6D'}
-                  onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(0,0,0,0.1)'}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2"
-                  style={{ color: '#6B6B6B' }}
+                  style={{ color: '#666666' }}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -215,40 +173,41 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  className="w-4 h-4 rounded" 
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded"
                   style={{ accentColor: '#E12E6D' }}
                 />
-                <span style={{ color: '#A0A0A0' }}>记住我</span>
+                <span style={{ color: '#666666' }}>Remember me</span>
               </label>
               <Link href="/auth/forgot-password" style={{ color: '#E12E6D' }} className="hover:underline">
-                忘记密码？
+                Forgot password?
               </Link>
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-4 rounded-xl font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ 
+              className="w-full py-4 rounded-xl font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              style={{
                 background: 'linear-gradient(135deg, #E12E6D, #A855F7)',
                 boxShadow: '0 4px 20px rgba(225, 46, 109, 0.3)'
               }}
             >
-              {isLoading ? '登录中...' : '登录'}
+              {isLoading ? 'Signing in...' : 'Sign In'}
+              {!isLoading && <ArrowRight className="w-5 h-5" />}
             </button>
           </form>
 
           {/* Register Link */}
-          <p className="text-center mt-8" style={{ color: '#6B6B6B' }}>
-            还没有账号？{' '}
+          <p className="text-center mt-8" style={{ color: '#666666' }}>
+            Don&apos;t have an account?{' '}
             <Link href="/auth/register" style={{ color: '#E12E6D' }} className="font-medium hover:underline">
-              立即注册
+              Create one
             </Link>
           </p>
         </div>
       </div>
-    </div>
+    </MicrographicsLayout>
   );
 }

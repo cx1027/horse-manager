@@ -55,11 +55,12 @@ const FileUpload: React.FC<FileUploadProps> = ({
       {label && <label className="label">{label}</label>}
       <div
         className={cn(
-          'border-2 border-dashed border-border rounded-card p-8 text-center',
+          'border-2 border-dashed rounded-xl p-8 text-center',
           'transition-all duration-200 cursor-pointer',
           'hover:border-accent hover:bg-accent/5',
           error && 'border-error'
         )}
+        style={{ borderColor: 'var(--color-border)' }}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >

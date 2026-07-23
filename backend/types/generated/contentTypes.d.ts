@@ -582,6 +582,48 @@ export interface ApiHealthRecordHealthRecord
   };
 }
 
+export interface ApiHorseGalleryHorseGallery
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'horse_galleries';
+  info: {
+    description: 'Horse photo gallery with sharing capabilities';
+    displayName: 'Horse Gallery';
+    pluralName: 'horse-galleries';
+    singularName: 'horse-gallery';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    caption: Schema.Attribute.String;
+    category: Schema.Attribute.Enumeration<
+      ['full_body', 'close_up', 'action', 'competition', 'other']
+    > &
+      Schema.Attribute.DefaultTo<'other'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    horse: Schema.Attribute.Relation<'manyToOne', 'api::horse.horse'>;
+    isPublic: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::horse-gallery.horse-gallery'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    shareToken: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    uploadedBy: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    url: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface ApiHorseHorse extends Struct.CollectionTypeSchema {
   collectionName: 'horses';
   info: {
@@ -615,6 +657,10 @@ export interface ApiHorseHorse extends Struct.CollectionTypeSchema {
     feedingRecords: Schema.Attribute.Relation<
       'oneToMany',
       'api::feeding-record.feeding-record'
+    >;
+    galleryPhotos: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::horse-gallery.horse-gallery'
     >;
     gender: Schema.Attribute.Enumeration<['male', 'female', 'gelding']> &
       Schema.Attribute.Required &
@@ -1314,6 +1360,7 @@ declare module '@strapi/strapi' {
       'api::commercial-activity.commercial-activity': ApiCommercialActivityCommercialActivity;
       'api::feeding-record.feeding-record': ApiFeedingRecordFeedingRecord;
       'api::health-record.health-record': ApiHealthRecordHealthRecord;
+      'api::horse-gallery.horse-gallery': ApiHorseGalleryHorseGallery;
       'api::horse.horse': ApiHorseHorse;
       'api::insurance.insurance': ApiInsuranceInsurance;
       'api::medical-record.medical-record': ApiMedicalRecordMedicalRecord;

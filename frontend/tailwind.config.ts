@@ -41,20 +41,13 @@ const config: Config = {
     "fill-[#DCEBFF]",
     "fill-[#FFE7CC]",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        background: {
-          primary: "#F0F0F0",
-          secondary: "#FAFAFA",
-        },
-        surface: {
-          DEFAULT: "#FFFFFF",
-          elevated: "#FFFFFF",
-        },
+        // Brand Primary - Coral Pink
         primary: {
           DEFAULT: "#F05050",
-          soft: "#F8C0C8",
           50: "#FEF2F2",
           100: "#FCE4E4",
           200: "#F9C8C8",
@@ -65,57 +58,101 @@ const config: Config = {
           700: "#CC3030",
           800: "#992424",
           900: "#661818",
+          soft: "#F8C0C8",
         },
-        secondary: {
-          DEFAULT: "#B07060",
-          50: "#F5EFED",
-          100: "#E8DED8",
-          200: "#D4BFB8",
-          300: "#C09A8E",
-          400: "#B07060",
-          500: "#8C5548",
-          600: "#6B3F35",
-          700: "#4A2A24",
-          800: "#2A1612",
-          900: "#150B0A",
-        },
+        // Brand Accent - Coral Red (main CTA accent)
         accent: {
-          DEFAULT: "#E85D5D",
+          DEFAULT: "#E12E6D",
+          light: "#F472B6",
           soft: "#FADADA",
+          muted: "rgba(225, 46, 109, 0.15)",
         },
+        // Secondary - Purple (gradient partner with accent)
+        secondary: {
+          DEFAULT: "#A855F7",
+          50: "#F5EFED",
+          100: "#EDE4FF",
+          200: "#D8B8FF",
+          300: "#C084FC",
+          400: "#A855F7",
+          500: "#9333EA",
+          600: "#7E22CE",
+          700: "#6B21A8",
+        },
+        // Backgrounds (Dark theme)
+        background: {
+          primary: "#0F0F0F",
+          secondary: "#1A1A1A",
+          card: "#1E1E1E",
+          elevated: "#2A2A2A",
+          subtle: "#242424",
+        },
+        // Surfaces
+        surface: {
+          DEFAULT: "#FFFFFF",
+          primary: "#1E1E1E",
+          secondary: "#2A2A2A",
+          elevated: "#F5F5F5",
+        },
+        // Text colors
         text: {
-          primary: "#101010",
-          secondary: "#808080",
-          muted: "#A0A0A0",
-          inverse: "#FFFFFF",
+          primary: "#FFFFFF",
+          secondary: "#A0A0A0",
+          muted: "#6B6B6B",
+          inverse: "#0F0F0F",
+          tertiary: "#4B5563",
         },
+        // Border colors
         border: {
-          DEFAULT: "#E6E6E6",
-          subtle: "#F0F0F0",
-          emphasis: "#D0D0D0",
+          DEFAULT: "rgba(255, 255, 255, 0.1)",
+          subtle: "rgba(255, 255, 255, 0.06)",
+          emphasis: "rgba(255, 255, 255, 0.2)",
+        },
+        // Semantic
+        success: {
+          DEFAULT: "#10B981",
+          soft: "rgba(16, 185, 129, 0.15)",
+        },
+        warning: {
+          DEFAULT: "#F59E0B",
+          soft: "rgba(245, 158, 11, 0.15)",
+        },
+        error: {
+          DEFAULT: "#EF4444",
+          soft: "rgba(239, 68, 68, 0.15)",
+        },
+        info: {
+          DEFAULT: "#2A82EB",
+          soft: "rgba(42, 130, 235, 0.15)",
         },
       },
       borderRadius: {
-        sm: "12px",
-        DEFAULT: "16px",
-        md: "20px",
-        lg: "24px",
-        xl: "28px",
-        "2xl": "32px",
-        "3xl": "40px",
+        sm: "8px",
+        DEFAULT: "12px",
+        md: "16px",
+        lg: "20px",
+        xl: "24px",
+        "2xl": "28px",
+        "3xl": "32px",
         full: "9999px",
+      },
+      boxShadow: {
+        card: "0 2px 12px rgba(0, 0, 0, 0.08)",
+        elevated: "0 4px 20px rgba(0, 0, 0, 0.12)",
+        button: "0 2px 8px rgba(225, 46, 109, 0.3)",
+        fab: "0 4px 20px rgba(225, 46, 109, 0.4)",
+        dropdown: "0 8px 32px rgba(0, 0, 0, 0.3)",
       },
       fontFamily: {
         sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
       },
-      boxShadow: {
-        card: "0 2px 12px rgba(0, 0, 0, 0.06)",
-        elevated: "0 4px 20px rgba(0, 0, 0, 0.08)",
-        soft: "0 1px 4px rgba(0, 0, 0, 0.04)",
-        button: "0 2px 8px rgba(240, 80, 80, 0.25)",
-      },
       spacing: {
-        'safe-bottom': 'env(safe-area-inset-bottom)',
+        "safe-bottom": "env(safe-area-inset-bottom)",
+      },
+      backgroundImage: {
+        "gradient-brand": "linear-gradient(135deg, #E12E6D, #A855F7)",
+        "gradient-accent": "linear-gradient(135deg, #E12E6D, #F472B6)",
+        "gradient-primary": "linear-gradient(135deg, #F05050, #E63D3D)",
       },
     },
   },

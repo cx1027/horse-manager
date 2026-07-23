@@ -30,10 +30,10 @@ const StatCard: React.FC<StatCardProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div 
+      <div
         className={cn(
-          'min-h-[140px] rounded-[20px] bg-[#1E1E1E] border border-border',
-          'flex items-center justify-center shadow-[0_4px_24px_rgba(0,0,0,0.3)]',
+          'min-h-[140px] rounded-xl bg-background-card border border-border',
+          'flex items-center justify-center shadow-dropdown',
           className
         )}
       >
@@ -43,22 +43,22 @@ const StatCard: React.FC<StatCardProps> = ({
   }
 
   return (
-    <div 
+    <div
       className={cn(
-        'min-h-[140px] rounded-[20px] border border-border p-5',
-        'bg-gradient-to-br from-[#1E1E1E] to-[#2A2A2A]',
-        'shadow-[0_4px_24px_rgba(0,0,0,0.3)]',
+        'min-h-[140px] rounded-xl border border-border p-5',
+        'bg-gradient-to-br from-background-card to-background-elevated',
+        'shadow-dropdown',
         'transition-all duration-300 ease-out hover:-translate-y-0.5',
         className
       )}
     >
       <div className="flex items-start justify-between mb-3">
         <div>
-          <p className="text-sm text-[#A0A0A0] mb-1">{title}</p>
-          <p className="text-3xl font-bold text-white">{value}</p>
+          <p className="text-sm text-text-muted mb-1">{title}</p>
+          <p className="text-3xl font-bold text-text-primary">{value}</p>
         </div>
         {icon && (
-          <div 
+          <div
             className="p-3 rounded-xl"
             style={{ background: 'rgba(225, 46, 109, 0.15)' }}
           >
@@ -66,28 +66,28 @@ const StatCard: React.FC<StatCardProps> = ({
           </div>
         )}
       </div>
-      
+
       {progress !== undefined && (
         <div className="mb-2">
-          <div className="h-2 bg-[#2A2A2A] rounded-full overflow-hidden">
-            <div 
+          <div className="h-2 rounded-full overflow-hidden" style={{ background: 'var(--color-border)' }}>
+            <div
               className="h-full rounded-full transition-all duration-500"
-              style={{ 
+              style={{
                 width: `${progress}%`,
-                background: 'linear-gradient(90deg, #E12E6D, #F472B6)'
+                background: 'linear-gradient(90deg, #E12E6D, #F472B6)',
               }}
             />
           </div>
         </div>
       )}
-      
+
       <div className="flex items-center justify-between">
-        {subtitle && <p className="text-sm text-[#A0A0A0]">{subtitle}</p>}
+        {subtitle && <p className="text-sm text-text-muted">{subtitle}</p>}
         {trend && (
           <span
             className={cn(
               'text-sm font-medium',
-              trend.isPositive ? 'text-[#10B981]' : 'text-[#EF4444]'
+              trend.isPositive ? 'text-success' : 'text-error'
             )}
           >
             {trend.isPositive ? '+' : ''}

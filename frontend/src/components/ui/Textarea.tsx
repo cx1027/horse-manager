@@ -24,7 +24,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           id={textareaId}
           className={cn(
             'input min-h-[120px] resize-y',
-            error && 'input-error',
+            error && 'border-accent ring-2 ring-accent/20',
             className
           )}
           {...props}

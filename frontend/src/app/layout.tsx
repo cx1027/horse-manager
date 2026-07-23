@@ -20,11 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN">
+    <html lang="zh-CN" className="dark">
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
-      <body className="min-h-screen bg-background-primary">{children}</body>
+      <body className="min-h-screen bg-background-primary text-text-primary">{children}</body>
     </html>
   );
 }

@@ -1,30 +1,32 @@
 "use client";
 
-import { ButtonHTMLAttributes, forwardRef } from "react";
+import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "ghost" | "outline" | "danger";
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
   circle?: boolean;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className = "", variant = "primary", size = "md", isLoading, disabled, circle, children, ...props }, ref) => {
-    const baseStyles = "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-50 disabled:cursor-not-allowed";
-    
+  ({ className = "", variant = "primary", size = "md", isLoading, disabled, circle, leftIcon, rightIcon, children, ...props }, ref) => {
+    const baseStyles = "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent/30 disabled:opacity-50 disabled:cursor-not-allowed";
+
     const variants = {
-      primary: "bg-primary text-white hover:bg-primary-600 active:bg-primary-700 shadow-button",
-      secondary: "bg-surface text-text-primary border border-border hover:bg-background-primary active:bg-background-primary",
-      ghost: "bg-transparent text-text-secondary hover:bg-background-primary active:bg-background-secondary",
-      outline: "bg-transparent text-primary border-2 border-primary hover:bg-primary-50 active:bg-primary-100",
-      danger: "bg-red-500 text-white hover:bg-red-600 active:bg-red-700 shadow-button",
+      primary: "text-white shadow-button",
+      secondary: "bg-background-card text-text-primary border border-border hover:bg-background-elevated",
+      ghost: "bg-transparent text-text-secondary hover:bg-background-secondary",
+      outline: "bg-transparent text-accent border-2 border-accent hover:bg-accent/10",
+      danger: "bg-error text-white shadow-button",
     };
-    
+
     const sizes = {
-      sm: "px-4 py-2 text-sm rounded-full",
-      md: "px-6 py-3 text-sm rounded-full",
-      lg: "px-8 py-4 text-base rounded-full",
+      sm: "px-4 py-2 text-sm rounded-full gap-2",
+      md: "px-6 py-3 text-sm rounded-full gap-2",
+      lg: "px-8 py-4 text-base rounded-full gap-2",
     };
 
     const circleSizes = {
@@ -37,6 +39,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={`${baseStyles} ${variants[variant]} ${circle ? circleSizes[size] : sizes[size]} ${className}`}
+        style={variant === 'primary' ? { background: 'linear-gradient(135deg, #E12E6D, #A855F7)' } : undefined}
         disabled={disabled || isLoading}
         {...props}
       >
@@ -48,7 +51,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             </svg>
             Loading...
           </>
-        ) : children}
+        ) : (
+          <>
+            {leftIcon}
+            {children}
+            {rightIcon}
+          </>
+        )}
       </button>
     );
   }

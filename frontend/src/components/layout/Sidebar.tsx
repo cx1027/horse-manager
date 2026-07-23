@@ -3,13 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  Stethoscope, 
-  Activity, 
-  Utensils, 
-  ShoppingBag, 
-  Shield, 
+import {
+  LayoutDashboard,
+  Stethoscope,
+  Activity,
+  Utensils,
+  ShoppingBag,
+  Shield,
   Settings,
   Users,
   FileText,
@@ -22,39 +22,42 @@ import { cn } from '@/lib/utils';
 interface SidebarProps {
   isCollapsed?: boolean;
   onToggle?: () => void;
+  className?: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle, className = "" }) => {
   const pathname = usePathname();
 
   const menuItems = [
-    { id: 'dashboard', label: '仪表盘', icon: LayoutDashboard, href: '/dashboard' },
-    { id: 'horses', label: '马匹管理', icon: HorseIcon, href: '/horses' },
-    { id: 'medical', label: '医疗记录', icon: Stethoscope, href: '/medical' },
-    { id: 'health', label: '健康数据', icon: Activity, href: '/health' },
-    { id: 'feeding', label: '喂养记录', icon: Utensils, href: '/feeding' },
-    { id: 'activities', label: '商业活动', icon: ShoppingBag, href: '/activities' },
-    { id: 'insurance', label: '保险信息', icon: Shield, href: '/insurance' },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+    { id: 'horses', label: 'Horses', icon: HorseIcon, href: '/horses' },
+    { id: 'medical', label: 'Medical', icon: Stethoscope, href: '/medical' },
+    { id: 'health', label: 'Health', icon: Activity, href: '/health' },
+    { id: 'feeding', label: 'Feeding', icon: Utensils, href: '/feeding' },
+    { id: 'activities', label: 'Activities', icon: ShoppingBag, href: '/activities' },
+    { id: 'insurance', label: 'Insurance', icon: Shield, href: '/insurance' },
   ];
 
   const bottomItems = [
-    { id: 'users', label: '用户管理', icon: Users, href: '/admin/users', adminOnly: true },
-    { id: 'reports', label: '报表中心', icon: FileText, href: '/reports' },
-    { id: 'settings', label: '系统设置', icon: Settings, href: '/settings' },
+    { id: 'users', label: 'Users', icon: Users, href: '/admin/users', adminOnly: true },
+    { id: 'reports', label: 'Reports', icon: FileText, href: '/reports' },
+    { id: 'settings', label: 'Settings', icon: Settings, href: '/settings' },
   ];
 
   return (
     <aside
       className={cn(
-        'hidden lg:flex flex-col fixed left-0 top-0 h-screen bg-background-card border-r border-border transition-all duration-300 z-50',
-        isCollapsed ? 'w-16' : 'w-64'
+        'hidden lg:flex flex-col fixed left-0 top-0 h-screen border-r transition-all duration-300 z-50',
+        isCollapsed ? 'w-16' : 'w-64',
+        className
       )}
+      style={{ background: 'var(--color-background-card)', borderColor: 'var(--color-border)' }}
     >
       {/* Logo */}
-      <div className="h-16 flex items-center justify-center border-b border-border px-4">
+      <div className="h-16 flex items-center justify-center border-b px-4" style={{ borderColor: 'var(--color-border)' }}>
         {!isCollapsed && (
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-accent to-accent-light rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #E12E6D, #A855F7)', boxShadow: '0 4px 16px rgba(225, 46, 109, 0.3)' }}>
               <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C8.5 2 6 5 6 8c0 2 1 3 2 4l-1 8h10l-1-8c1-1 2-2 2-4 0-3-2.5-6-6-6zm0 2c2.5 0 4 2 4 4s-1.5 3-4 3-4-1-4-3 1.5-4 4-4z"/>
               </svg>
@@ -63,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle }) => {
           </Link>
         )}
         {isCollapsed && (
-          <div className="w-8 h-8 bg-gradient-to-br from-accent to-accent-light rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #E12E6D, #A855F7)' }}>
             <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C8.5 2 6 5 6 8c0 2 1 3 2 4l-1 8h10l-1-8c1-1 2-2 2-4 0-3-2.5-6-6-6zm0 2c2.5 0 4 2 4 4s-1.5 3-4 3-4-1-4-3 1.5-4 4-4z"/>
             </svg>
@@ -80,11 +83,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle }) => {
               key={item.id}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-button transition-colors',
+                'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors',
                 isActive
-                  ? 'bg-accent text-white'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-background-secondary'
+                  ? 'text-white'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-background-elevated'
               )}
+              style={isActive ? { background: 'linear-gradient(135deg, #E12E6D, #A855F7)' } : undefined}
               title={isCollapsed ? item.label : undefined}
             >
               <item.icon className="w-5 h-5 flex-shrink-0" />
@@ -95,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle }) => {
       </nav>
 
       {/* Bottom Navigation */}
-      <div className="p-3 border-t border-border space-y-1">
+      <div className="p-3 border-t space-y-1" style={{ borderColor: 'var(--color-border)' }}>
         {bottomItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
@@ -103,11 +107,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle }) => {
               key={item.id}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-button transition-colors',
+                'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors',
                 isActive
-                  ? 'bg-accent text-white'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-background-secondary'
+                  ? 'text-white'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-background-elevated'
               )}
+              style={isActive ? { background: 'linear-gradient(135deg, #E12E6D, #A855F7)' } : undefined}
               title={isCollapsed ? item.label : undefined}
             >
               <item.icon className="w-5 h-5 flex-shrink-0" />
@@ -119,14 +124,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle }) => {
         {/* Collapse Toggle */}
         <button
           onClick={onToggle}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-button text-text-secondary hover:text-text-primary hover:bg-background-secondary transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-background-elevated transition-colors"
         >
           {isCollapsed ? (
             <ChevronRight className="w-5 h-5 flex-shrink-0" />
           ) : (
             <>
               <ChevronLeft className="w-5 h-5 flex-shrink-0" />
-              <span className="text-sm font-medium">收起</span>
+              <span className="text-sm font-medium">Collapse</span>
             </>
           )}
         </button>

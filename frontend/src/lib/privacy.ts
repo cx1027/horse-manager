@@ -4,7 +4,7 @@
  * Handles data visibility filtering based on user roles and horse visibility settings.
  */
 
-import type { Horse, User, HorseVisibilitySettings, PrivacyLevel } from '@/types';
+import type { Horse, User, HorseVisibilitySettings, PrivacyLevel, Insurance } from '@/types';
 
 /**
  * Check if a user can access a specific privacy level
@@ -148,10 +148,10 @@ function filterForInvestor(horse: Horse): Partial<Horse> {
       seller: undefined,
       buyer: undefined,
     })),
-    insurance: horse.insurance ? {
-      ...horse.insurance,
-      policyNo: undefined,
-    } : undefined,
+    insurance: horse.insurance ? (() => {
+      const { policyNo: _p, ...rest } = horse.insurance;
+      return { ...rest, policyNo: '***' } as Insurance;
+    })() : undefined,
   };
 }
 
@@ -165,7 +165,7 @@ function filterByPrivacyLevels(horse: Horse, viewer: User | null): Partial<Horse
   const publicFields = ['id', 'name', 'breed', 'color', 'gender', 'birthDate', 'status'];
   for (const field of publicFields) {
     if (field in horse) {
-      (result as Record<string, unknown>)[field] = (horse as Record<string, unknown>)[field];
+      (result as Record<string, unknown>)[field] = (horse as unknown as Record<string, unknown>)[field];
     }
   }
   
@@ -174,7 +174,7 @@ function filterByPrivacyLevels(horse: Horse, viewer: User | null): Partial<Horse
     const memberFields = ['description', 'stableLocation', 'commercialActivities', 'photos'];
     for (const field of memberFields) {
       if (field in horse && horse[field as keyof Horse] !== undefined) {
-        (result as Record<string, unknown>)[field] = (horse as Record<string, unknown>)[field];
+        (result as Record<string, unknown>)[field] = (horse as unknown as Record<string, unknown>)[field];
       }
     }
   }

@@ -25,7 +25,7 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
           type="date"
           className={cn(
             'input cursor-pointer',
-            error && 'input-error',
+            error && 'border-accent ring-2 ring-accent/20',
             className
           )}
           {...props}

@@ -20,14 +20,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           type={type}
           className={`
-            w-full rounded-full border border-border bg-surface px-4 py-3 
+            w-full border rounded-full px-4 py-3 
             text-sm text-text-primary placeholder:text-text-muted
             transition-all duration-200
-            focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20
+            focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20
             disabled:cursor-not-allowed disabled:opacity-50
-            ${error ? "border-primary" : ""}
+            ${error ? "border-accent" : ""}
             ${className}
           `}
+          style={{ background: 'var(--color-background-card)', borderColor: 'var(--color-border)' }}
           {...props}
         />
         {error && (

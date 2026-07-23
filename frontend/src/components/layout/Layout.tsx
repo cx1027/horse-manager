@@ -9,8 +9,9 @@ import BottomNav from './BottomNav';
 interface LayoutProps {
   children: React.ReactNode;
   user?: {
-    name: string;
-    email: string;
+    name?: string;
+    username?: string;
+    email?: string;
     avatar?: string | null;
   } | null;
 }
@@ -38,7 +39,8 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
       {isMobileMenuOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 backdrop-blur-sm z-40 lg:hidden"
+            style={{ background: 'rgba(0,0,0,0.6)' }}
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <Sidebar

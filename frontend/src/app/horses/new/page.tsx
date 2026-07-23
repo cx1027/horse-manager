@@ -1,257 +1,165 @@
 'use client';
 
 import React, { useState } from 'react';
-import Layout from '@/components/layout/Layout';
-import Card from '@/components/ui/Card';
-import Badge from '@/components/ui/Badge';
+import MicrographicsLayout from '@/components/layout/MicrographicsLayout';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Textarea from '@/components/ui/Textarea';
 import DatePicker from '@/components/ui/DatePicker';
-import { 
-  ArrowLeft, 
-  Save, 
+import {
+  ArrowLeft,
+  Save,
   Camera,
   Stethoscope,
   Activity,
   Utensils,
   ShoppingBag,
   Shield,
-  MapPin
+  MapPin,
+  Plus
 } from 'lucide-react';
-import HorseIcon from '@/components/ui/HorseIcon';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export default function NewHorsePage() {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSubmitting(false);
+    await new Promise((r) => setTimeout(r, 1000));
     router.push('/horses');
   };
 
-  const user = {
-    name: '张三',
-    email: 'zhangsan@example.com',
-    avatar: null,
-  };
-
   return (
-    <Layout user={user}>
-      {/* Page Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/horses">
-          <Button variant="ghost" size="sm" leftIcon={<ArrowLeft className="w-4 h-4" />}>
-            返回
-          </Button>
-        </Link>
-        <div>
-          <h1 className="heading-2">添加马匹</h1>
-          <p className="text-text-secondary">录入新马匹的基本信息</p>
+    <MicrographicsLayout variant="light" fullWidth>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-10">
+          <Link href="/horses">
+            <button className="w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:bg-gray-100" style={{ background: '#F5F5F5' }}>
+              <ArrowLeft className="w-5 h-5 text-black" />
+            </button>
+          </Link>
+          <div>
+            <h1 className="text-4xl font-bold text-black tracking-tight">Add Horse</h1>
+            <p className="text-gray-500 mt-1">Register a new horse to your stable</p>
+          </div>
         </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="grid lg:grid-cols-12 gap-8">
+            {/* Main Form */}
+            <div className="lg:col-span-8 space-y-8">
+              {/* Basic Information */}
+              <div className="rounded-2xl p-8" style={{ background: '#FFFFFF', border: '2px solid #E5E5E5', boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)' }}>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(225, 46, 109, 0.15), rgba(168, 85, 247, 0.1))' }}>
+                    <Plus className="w-6 h-6 text-pink-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-black">Basic Information</h2>
+                    <p className="text-sm text-gray-500">Horse profile details</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-5">
+                  <Input label="Horse Name *" name="name" placeholder="Enter horse name" required />
+                  <Select label="Gender *" name="gender" required options={[{ value: 'male', label: 'Stallion' }, { value: 'female', label: 'Mare' }, { value: 'gelding', label: 'Gelding' }]} />
+                  <DatePicker label="Birth Date" name="birthDate" />
+                  <Input label="Breed" name="breed" placeholder="e.g. Thoroughbred, Arabian" />
+                  <Input label="Color" name="color" placeholder="e.g. Brown, Black, White" />
+                  <Input label="Microchip" name="microchip" placeholder="15-digit chip number" />
+                  <Input label="Registration No." name="registrationNo" placeholder="Certificate number" />
+                  <Select label="Status" name="status" options={[{ value: 'active', label: 'Active' }, { value: 'inactive', label: 'Inactive' }]} />
+                </div>
+
+                <div className="mt-5">
+                  <Textarea label="Notes" name="description" placeholder="Additional information about the horse..." rows={4} />
+                </div>
+              </div>
+
+              {/* Location */}
+              <div className="rounded-2xl p-8" style={{ background: '#FFFFFF', border: '2px solid #E5E5E5', boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)' }}>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(225, 46, 109, 0.1)' }}>
+                    <MapPin className="w-6 h-6 text-pink-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-black">Location</h2>
+                    <p className="text-sm text-gray-500">Stable location</p>
+                  </div>
+                </div>
+                <Input label="Stable Location" name="stableLocation" placeholder="e.g. Zone A - Stall 1" />
+              </div>
+
+              {/* Photos */}
+              <div className="rounded-2xl p-8" style={{ background: '#FFFFFF', border: '2px solid #E5E5E5', boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)' }}>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(168, 85, 247, 0.1)' }}>
+                    <Camera className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-black">Photos</h2>
+                    <p className="text-sm text-gray-500">Upload horse photos</p>
+                  </div>
+                </div>
+                <div className="border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all hover:border-pink-500 hover:bg-pink-50/30" style={{ borderColor: '#E5E5E5' }}>
+                  <input type="file" id="photos" multiple accept="image/*" className="hidden" />
+                  <label htmlFor="photos" className="cursor-pointer">
+                    <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(225, 46, 109, 0.1), rgba(168, 85, 247, 0.1))' }}>
+                      <Camera className="w-8 h-8 text-pink-500" />
+                    </div>
+                    <p className="text-black font-semibold mb-1">Drag & drop or click to upload</p>
+                    <p className="text-sm text-gray-500">JPG, PNG, max 10 photos</p>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-4 space-y-6">
+              {/* Quick Add */}
+              <div className="rounded-2xl p-6" style={{ background: '#FFFFFF', border: '2px solid #E5E5E5', boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)' }}>
+                <h3 className="text-lg font-bold text-black mb-5">Quick Add</h3>
+                <div className="space-y-3">
+                  {[
+                    { href: '/medical/new', icon: Stethoscope, color: '#10B981', label: 'Medical Record' },
+                    { href: '/health/new', icon: Activity, color: '#F59E0B', label: 'Health Data' },
+                    { href: '/feeding/new', icon: Utensils, color: '#E12E6D', label: 'Feeding Record' },
+                    { href: '/activities/new', icon: ShoppingBag, color: '#A855F7', label: 'Commercial Activity' },
+                    { href: '/insurance/new', icon: Shield, color: '#EF4444', label: 'Insurance' },
+                  ].map((item) => (
+                    <Link key={item.href} href={item.href}>
+                      <div className="flex items-center gap-3 p-4 rounded-xl transition-all hover:translate-x-1" style={{ background: '#F8F8F8', border: '1px solid transparent' }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = item.color + '40'; (e.currentTarget as HTMLElement).style.background = item.color + '10'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'transparent'; (e.currentTarget as HTMLElement).style.background = '#F8F8F8'; }}
+                      >
+                        <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                        <span className="text-sm text-gray-700">{item.label}</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="rounded-2xl p-6" style={{ background: 'linear-gradient(135deg, #E12E6D, #A855F7)', boxShadow: '0 8px 30px rgba(225, 46, 109, 0.3)' }}>
+                <h3 className="text-lg font-bold text-white mb-5">Actions</h3>
+                <div className="space-y-3">
+                  <Button type="submit" className="w-full bg-white text-pink-600 hover:bg-white/90 shadow-lg" isLoading={isSubmitting}>
+                    <Save className="w-4 h-4" /> Save Horse
+                  </Button>
+                  <Button type="button" variant="secondary" className="w-full border-white/30 text-white hover:bg-white/10" onClick={() => router.push('/horses')}>
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
-
-      <form onSubmit={handleSubmit}>
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Main Form */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Basic Info */}
-            <Card>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
-                  <HorseIcon className="w-5 h-5 text-accent" />
-                </div>
-                <div>
-                  <h2 className="heading-4">基本信息</h2>
-                  <p className="text-sm text-text-secondary">马匹的基本档案信息</p>
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <Input
-                  label="马匹名称 *"
-                  name="name"
-                  placeholder="输入马匹名称"
-                  required
-                />
-                <Select
-                  label="性别 *"
-                  name="gender"
-                  required
-                  options={[
-                    { value: 'male', label: '公马' },
-                    { value: 'female', label: '母马' },
-                    { value: 'gelding', label: '骟马' },
-                  ]}
-                />
-                <DatePicker
-                  label="出生日期"
-                  name="birthDate"
-                />
-                <Input
-                  label="品种"
-                  name="breed"
-                  placeholder="如：纯血马、阿拉伯马"
-                />
-                <Input
-                  label="毛色"
-                  name="color"
-                  placeholder="如：棕色、黑色、白色"
-                />
-                <Input
-                  label="芯片号"
-                  name="microchip"
-                  placeholder="15位芯片号"
-                />
-                <Input
-                  label="血统证书号"
-                  name="registrationNo"
-                  placeholder="证书编号"
-                />
-                <Select
-                  label="状态"
-                  name="status"
-                  options={[
-                    { value: 'active', label: '活跃' },
-                    { value: 'inactive', label: '不活跃' },
-                    { value: 'sold', label: '已出售' },
-                    { value: 'deceased', label: '已故' },
-                  ]}
-                />
-              </div>
-
-              <div className="mt-4">
-                <Textarea
-                  label="备注"
-                  name="description"
-                  placeholder="其他相关信息..."
-                  rows={4}
-                />
-              </div>
-            </Card>
-
-            {/* Location */}
-            <Card>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-accent" />
-                </div>
-                <div>
-                  <h2 className="heading-4">位置信息</h2>
-                  <p className="text-sm text-text-secondary">马匹所在马厩位置</p>
-                </div>
-              </div>
-
-              <Input
-                label="马厩位置"
-                name="stableLocation"
-                placeholder="如：A区 1号马厩"
-              />
-            </Card>
-
-            {/* Photos */}
-            <Card>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
-                  <Camera className="w-5 h-5 text-accent" />
-                </div>
-                <div>
-                  <h2 className="heading-4">照片</h2>
-                  <p className="text-sm text-text-secondary">上传马匹照片</p>
-                </div>
-              </div>
-
-              <div className="border-2 border-dashed border-border rounded-card p-8 text-center hover:border-accent hover:bg-accent/5 transition-colors cursor-pointer">
-                <input type="file" id="photos" multiple accept="image/*" className="hidden" />
-                <label htmlFor="photos" className="cursor-pointer">
-                  <Camera className="w-10 h-10 text-text-muted mx-auto mb-3" />
-                  <p className="text-text-primary font-medium mb-1">
-                    拖拽或点击上传
-                  </p>
-                  <p className="text-sm text-text-secondary">
-                    支持 JPG, PNG 格式，最多 10 张
-                  </p>
-                </label>
-              </div>
-            </Card>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Links */}
-            <Card>
-              <h3 className="heading-4 mb-4">快速添加</h3>
-              <div className="space-y-3">
-                <Link
-                  href="/medical/new"
-                  className="flex items-center gap-3 p-3 bg-background-secondary rounded-lg hover:bg-success/10 transition-colors"
-                >
-                  <Stethoscope className="w-5 h-5 text-success" />
-                  <span className="text-sm text-text-secondary">医疗记录</span>
-                </Link>
-                <Link
-                  href="/health/new"
-                  className="flex items-center gap-3 p-3 bg-background-secondary rounded-lg hover:bg-warning/10 transition-colors"
-                >
-                  <Activity className="w-5 h-5 text-warning" />
-                  <span className="text-sm text-text-secondary">健康数据</span>
-                </Link>
-                <Link
-                  href="/feeding/new"
-                  className="flex items-center gap-3 p-3 bg-background-secondary rounded-lg hover:bg-accent/10 transition-colors"
-                >
-                  <Utensils className="w-5 h-5 text-accent" />
-                  <span className="text-sm text-text-secondary">喂养记录</span>
-                </Link>
-                <Link
-                  href="/activities/new"
-                  className="flex items-center gap-3 p-3 bg-background-secondary rounded-lg hover:bg-text-secondary/10 transition-colors"
-                >
-                  <ShoppingBag className="w-5 h-5 text-text-secondary" />
-                  <span className="text-sm text-text-secondary">商业活动</span>
-                </Link>
-                <Link
-                  href="/insurance/new"
-                  className="flex items-center gap-3 p-3 bg-background-secondary rounded-lg hover:bg-error/10 transition-colors"
-                >
-                  <Shield className="w-5 h-5 text-error" />
-                  <span className="text-sm text-text-secondary">保险信息</span>
-                </Link>
-              </div>
-            </Card>
-
-            {/* Actions */}
-            <Card>
-              <h3 className="heading-4 mb-4">操作</h3>
-              <div className="space-y-3">
-                <Button
-                  type="submit"
-                  className="w-full"
-                  isLoading={isSubmitting}
-                  leftIcon={<Save className="w-4 h-4" />}
-                >
-                  保存马匹
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="w-full"
-                  onClick={() => router.push('/horses')}
-                >
-                  取消
-                </Button>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </form>
-    </Layout>
+    </MicrographicsLayout>
   );
 }

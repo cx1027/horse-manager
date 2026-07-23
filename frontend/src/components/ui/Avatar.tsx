@@ -25,7 +25,7 @@ export default function Avatar({ src, alt = "", fallback = "?", size = "md", cla
   }
 
   return (
-    <div className={`${sizes[size]} rounded-full bg-primary-soft flex items-center justify-center text-primary font-semibold ${className}`}>
+    <div className={`${sizes[size]} rounded-full bg-accent-muted flex items-center justify-center text-accent font-semibold ${className}`}>
       {fallback.charAt(0).toUpperCase()}
     </div>
   );

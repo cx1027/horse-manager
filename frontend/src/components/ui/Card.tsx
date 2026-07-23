@@ -1,13 +1,14 @@
 import { ReactNode } from "react";
 
 interface CardProps {
-  children: ReactNode;
+  children: React.ReactNode;
   className?: string;
   onClick?: () => void;
   padding?: "none" | "sm" | "md" | "lg";
+  style?: React.CSSProperties;
 }
 
-export default function Card({ children, className = "", onClick, padding = "md" }: CardProps) {
+export default function Card({ children, className = "", onClick, padding = "md", style }: CardProps) {
   const paddingStyles = {
     none: "",
     sm: "p-4",
@@ -19,7 +20,8 @@ export default function Card({ children, className = "", onClick, padding = "md"
   
   return (
     <Component
-      className={`bg-surface rounded-3xl shadow-card ${paddingStyles[padding]} ${onClick ? "cursor-pointer hover:shadow-elevated transition-shadow w-full text-left" : ""} ${className}`}
+      className={`bg-background-card rounded-xl border border-border ${paddingStyles[padding]} ${onClick ? "cursor-pointer hover:shadow-elevated transition-shadow w-full text-left" : ""} ${className}`}
+      style={style}
       onClick={onClick}
     >
       {children}
@@ -44,5 +46,5 @@ export function CardContent({ children, className = "" }: { children: ReactNode;
 }
 
 export function CardFooter({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`mt-5 pt-5 border-t border-border ${className}`}>{children}</div>;
+  return <div className={`mt-5 pt-5 border-t ${className}`} style={{ borderColor: 'var(--color-border)' }}>{children}</div>;
 }

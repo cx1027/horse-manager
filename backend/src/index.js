@@ -1,69 +1,64 @@
 'use strict';
 
-const ACTIONS = [
-  'api::register.register.registerWithRole',
-  'api::horse.horse.find',
-  'api::horse.horse.findOne',
-  'api::horse.horse.create',
-  'api::medical-record.medical-record.find',
-  'api::medical-record.medical-record.findOne',
-  'api::medical-record.medical-record.create',
-  'api::health-record.health-record.find',
-  'api::health-record.health-record.findOne',
-  'api::health-record.health-record.create',
-  'api::insurance.insurance.find',
-  'api::insurance.insurance.findOne',
-  'api::insurance.insurance.create',
-  'api::feeding-record.feeding-record.find',
-  'api::feeding-record.feeding-record.findOne',
-  'api::feeding-record.feeding-record.create',
-  'api::commercial-activity.commercial-activity.find',
-  'api::commercial-activity.commercial-activity.findOne',
-  'api::commercial-activity.commercial-activity.create',
-  'api::notification-setting.notification-setting.find',
-  'api::notification-setting.notification-setting.findOne',
-  'api::notification-setting.notification-setting.create',
-  'api::notification-setting.notification-setting.update',
-];
+const bcrypt = require('bcryptjs');
 
-module.exports = {
-  register() {
-    console.log('🚀 Horse Info API registered');
-  },
+module.exports = async ({ strapi }) => {
+  const testUsers = [
+    {
+      email: 'user@test.com',
+      username: 'testuser',
+      password: 'Test123456',
+      role: 'user',
+    },
+    {
+      email: 'investor@test.com',
+      username: 'testinvestor',
+      password: 'Test123456',
+      role: 'investor',
+    },
+    {
+      email: 'staff@test.com',
+      username: 'teststaff',
+      password: 'Test123456',
+      role: 'staff',
+    },
+  ];
 
-  async bootstrap({ strapi }) {
-    console.log('⚡ Bootstrapping API permissions...');
-
-    const publicRole = await strapi.query('plugin::users-permissions.role').findOne({
-      where: { type: 'public' },
+  for (const userData of testUsers) {
+    const existingUser = await strapi.db.query('plugin::users-permissions.user').findOne({
+      where: { email: userData.email },
     });
 
-    if (!publicRole) {
-      console.error('⚠ Public role not found');
-      return;
+    if (existingUser) {
+      strapi.log.info(`User ${userData.email} already exists, skipping...`);
+      continue;
     }
 
-    console.log(`Public role ID: ${publicRole.id}`);
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-    for (const action of ACTIONS) {
-      try {
-        const existing = await strapi.query('plugin::users-permissions.permission').findOne({
-          where: { action },
-        });
+    const role = await strapi.db.query('plugin::users-permissions.role').findOne({
+      where: { type: userData.role },
+    });
 
-        if (!existing) {
-          await strapi.query('plugin::users-permissions.permission').create({
-            data: { action, enabled: true, role: publicRole.id },
-          });
-          console.log(`  ✓ Created: ${action}`);
-        } else {
-          console.log(`  - Exists: ${action}`);
-        }
-      } catch (e) {
-        console.error(`  ✗ Error: ${action} - ${e.message}`);
-      }
+    if (!role) {
+      strapi.log.error(`Role '${userData.role}' not found!`);
+      continue;
     }
 
-    console.log('✅ API permissions configured!');
-  },
+    await strapi.db.query('plugin::users-permissions.user').create({
+      data: {
+        username: userData.username,
+        email: userData.email,
+        password: hashedPassword,
+        role: role.id,
+        provider: 'local',
+        confirmed: true,
+        blocked: false,
+      },
+    });
+
+    strapi.log.info(`Created user: ${userData.email} with role: ${userData.role}`);
+  }
+
+  strapi.log.info('Test users seed completed!');
 };

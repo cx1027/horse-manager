@@ -2,182 +2,179 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Shield, Activity, Camera, FileText, ChevronRight } from 'lucide-react';
-import HorseIcon from '@/components/ui/HorseIcon';
-import Button from '@/components/ui/Button';
-import Card from '@/components/ui/Card';
+import Image from 'next/image';
+import { ArrowRight } from 'lucide-react';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#121212' }}>
-      {/* Decorative circles */}
-      <div 
-        className="fixed top-0 right-0 w-[300px] h-[300px] rounded-full opacity-20 pointer-events-none"
-        style={{ 
-          background: 'radial-gradient(circle, #E12E6D 0%, transparent 70%)',
-          transform: 'translate(30%, -30%)'
-        }}
-      />
-      <div 
-        className="fixed bottom-40 left-0 w-[200px] h-[200px] rounded-full opacity-10 pointer-events-none"
-        style={{ 
-          background: 'radial-gradient(circle, #A855F7 0%, transparent 70%)',
-          transform: 'translate(-50%, 50%)'
-        }}
-      />
+    <div className="relative min-h-screen overflow-hidden bg-black">
+      {/* Background Image */}
+      <div className="absolute inset-0 w-[1080px] left-1/2 -translate-x-1/2 bottom-[-41px]">
+        <Image
+          src="/images/background.webp"
+          alt=""
+          fill
+          className="object-cover pointer-events-none"
+          priority
+          unoptimized
+        />
+      </div>
 
-      {/* Hero Section */}
-      <section className="flex-1 flex items-center justify-center px-6 py-16 relative z-10">
-        <div className="max-w-6xl mx-auto text-center">
-          {/* Logo */}
-          <div className="flex items-center justify-center gap-3 mb-10">
-            <div 
-              className="w-20 h-20 rounded-full flex items-center justify-center shadow-lg"
-              style={{ 
-                background: 'linear-gradient(135deg, #E12E6D, #A855F7)',
-                boxShadow: '0 8px 32px rgba(225, 46, 109, 0.4)'
-              }}
-            >
-              <HorseIcon className="w-12 h-12 text-white" />
-            </div>
-          </div>
+      {/* Logo Layer - mix-blend-overlay */}
+      <div className="absolute w-[405px] h-[319px] left-[337px] top-[686px] overflow-clip mix-blend-overlay">
+        <div className="absolute" style={{ inset: '40.83% 22.18% 22.21% 60.8%' }}>
+          <Image src="/images/vector1.svg" alt="" fill className="object-contain" unoptimized />
+        </div>
+        <div className="absolute" style={{ inset: '22.21% 60.68% 40.83% 22.18%' }}>
+          <Image src="/images/vector2.svg" alt="" fill className="object-contain" unoptimized />
+        </div>
+        <div className="absolute" style={{ inset: '40.83% 35.21% 22.21% 47.77%' }}>
+          <Image src="/images/vector3.svg" alt="" fill className="object-contain" unoptimized />
+        </div>
+        <div className="absolute" style={{ inset: '22.21% 48% 40.83% 35.21%' }}>
+          <Image src="/images/vector4.svg" alt="" fill className="object-contain" unoptimized />
+        </div>
+      </div>
 
-          {/* Headline */}
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-            专业的马匹信息
-            <br />
-            <span 
-              className="bg-clip-text text-transparent"
-              style={{ backgroundImage: 'linear-gradient(135deg, #E12E6D, #F472B6)' }}
-            >
-              管理分享平台
-            </span>
-          </h1>
+      {/* Logo Layer - mix-blend-multiply */}
+      <div className="absolute w-[405px] h-[319px] left-[337px] top-[686px] overflow-clip mix-blend-multiply">
+        <div className="absolute" style={{ inset: '40.83% 22.18% 22.21% 60.8%' }}>
+          <Image src="/images/vector1.svg" alt="" fill className="object-contain" unoptimized />
+        </div>
+        <div className="absolute" style={{ inset: '22.21% 60.68% 40.83% 22.18%' }}>
+          <Image src="/images/vector2.svg" alt="" fill className="object-contain" unoptimized />
+        </div>
+        <div className="absolute" style={{ inset: '40.83% 35.21% 22.21% 47.77%' }}>
+          <Image src="/images/vector3.svg" alt="" fill className="object-contain" unoptimized />
+        </div>
+        <div className="absolute" style={{ inset: '22.21% 48% 40.83% 35.21%' }}>
+          <Image src="/images/vector4.svg" alt="" fill className="object-contain" unoptimized />
+        </div>
+      </div>
 
-          {/* Description */}
-          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-12" style={{ color: '#A0A0A0' }}>
-            无论是马匹爱好者、投资者还是专业管理者，HorseInfo 都能为您提供完整的
-            马匹信息管理解决方案
-          </p>
+      {/* Center Content - Micrographics */}
+      <div className="absolute left-[232px] top-[1005px] mix-blend-overlay">
+        {/* Top Labels */}
+        <p className="absolute font-42dot-sans text-[24px] tracking-[1.2px] text-white whitespace-nowrap left-[calc(50%-191px)] top-[0px]">
+          ASSET_ID 2026_MG_990X
+        </p>
+        <p className="absolute font-42dot-sans-light text-[24px] tracking-[1.2px] text-white whitespace-nowrap left-[calc(50%-192px)] top-[37px]">
+          /PROCESS/V01
+        </p>
+        <p className="absolute font-42dot-sans-light text-[24px] tracking-[6.24px] text-white whitespace-nowrap left-[calc(50%-192px)] top-[74px]">
+          ©2026
+        </p>
+        <p className="absolute font-42dot-sans text-[24px] tracking-[1.2px] text-white whitespace-nowrap left-[calc(50%-18px)] top-[128px]">
+          DIGITAL DESIGN LABS
+        </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/auth/login">
-              <button 
-                className="px-8 py-4 rounded-xl font-semibold text-white flex items-center gap-2 transition-transform hover:scale-105"
-                style={{ 
-                  background: 'linear-gradient(135deg, #E12E6D, #A855F7)',
-                  boxShadow: '0 8px 32px rgba(225, 46, 109, 0.4)'
-                }}
-              >
-                登录
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </Link>
-            <Link href="/auth/register">
-              <button 
-                className="px-8 py-4 rounded-xl font-semibold transition-all hover:scale-105"
-                style={{ 
-                  background: 'rgba(255,255,255,0.1)',
-                  border: '1px solid rgba(255,255,255,0.2)',
-                  color: 'white'
-                }}
-              >
-                注册账号
-              </button>
-            </Link>
+        {/* Main Quote */}
+        <p className="absolute font-42dot-sans text-[24px] text-white w-[438px] left-[calc(50%-192px)] top-[213px]">
+          INTENTION OVER TIME LEADS<br />TO MASTERY OF CRAFT
+        </p>
+
+        {/* Decorative Vectors */}
+        <div className="absolute aspect-[78.74/63.6] w-[78.74px] left-[21.48%] -translate-y-1/2 top-[calc(50%+202.5px)]">
+          <Image src="/images/vector5.svg" alt="" fill className="object-contain" unoptimized />
+        </div>
+        <div className="absolute aspect-[45.78/70.75] w-[45.78px] left-[32.22%] -translate-y-1/2 top-[calc(50%+203px)]">
+          <Image src="/images/vector6.svg" alt="" fill className="object-contain" unoptimized />
+        </div>
+        <div className="absolute w-[122px] h-[122px] left-[40.28%] -translate-y-1/2 top-[calc(50%+201.5px)] flex items-center justify-center">
+          <div className="w-[122px] h-[122px] -scale-x-100">
+            <Image src="/images/vector7.svg" alt="" fill className="object-contain" unoptimized />
           </div>
         </div>
-      </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-6 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <h2 className="text-3xl font-bold text-white mb-2">核心功能</h2>
-              <p style={{ color: '#6B6B6B' }}>探索 HorseInfo 的强大功能</p>
-            </div>
-            <button className="flex items-center gap-1 text-sm font-medium" style={{ color: '#E12E6D' }}>
-              查看全部 <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+        {/* Coordinates */}
+        <p className="absolute font-instrument-serif text-[24px] text-center tracking-[2.4px] text-white not-italic -translate-x-1/2 left-[calc(50%+196px)] top-[157px]">
+          122.6841° W
+        </p>
+        <p className="absolute font-instrument-serif text-[24px] text-center tracking-[2.4px] text-white not-italic -translate-x-1/2 left-[calc(50%+37.5px)] top-[157px]">
+          45.5248° N
+        </p>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="text-center cursor-pointer" style={{ background: '#1E1E1E' }}>
-              <div 
-                className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                style={{ background: 'rgba(225, 46, 109, 0.15)' }}
-              >
-                <FileText className="w-7 h-7" style={{ color: '#E12E6D' }} />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                马匹档案
-              </h3>
-              <p className="text-sm" style={{ color: '#6B6B6B' }}>
-                完整的马匹基本信息和详细档案管理
-              </p>
-            </Card>
+        {/* Roman Numerals */}
+        <p className="absolute font-instrument-serif text-[30.27px] text-white tracking-[-1.211px] not-italic left-[348px] top-[287px]">
+          XIV
+        </p>
+      </div>
 
-            <Card className="text-center cursor-pointer" style={{ background: '#1E1E1E' }}>
-              <div 
-                className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                style={{ background: 'rgba(16, 185, 129, 0.15)' }}
-              >
-                <Activity className="w-7 h-7" style={{ color: '#10B981' }} />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                健康追踪
-              </h3>
-              <p className="text-sm" style={{ color: '#6B6B6B' }}>
-                体重、健康数据可视化图表
-              </p>
-            </Card>
+      {/* Technical Info Panel - Top Left */}
+      <div className="absolute font-42dot-sans-light text-[21.67px] tracking-[-0.8667px] text-[#fffaee] mix-blend-overlay"
+        style={{ top: '8.65%', left: '32.59%' }}>
+        <p className="mb-0 whitespace-pre">EDITABLE MICROGRAPHICS</p>
+        <p className="mb-0 whitespace-pre">TEMPLATES ALL BUILT N FIGMA</p>
+        <p className="mb-0 whitespace-pre">USING GOOGLE FONTS</p>
+        <p className="mb-0 whitespace-pre">LUMINANCE: 0.88 Y</p>
+        <p className="mb-0 whitespace-pre">CONTRAST_RATIO: 21:1 [PASS_AAA]</p>
+        <p className="mb-0 whitespace-pre">&nbsp;</p>
+        <p className="mb-0 whitespace-pre">PRIMARY_FACE: ANTIQUE_OLIVE_NORD [OTF]</p>
+        <p className="mb-0 whitespace-pre">POINT_SIZE: 12.0pt / 120.0pt</p>
+        <p className="mb-0 whitespace-pre">LEADING: 14.5pt [120%]</p>
+        <p className="mb-0 whitespace-pre">TRACKING: -20 / 1000 em</p>
+        <p className="mb-0 whitespace-pre">CAP_HEIGHT: 8.4mm</p>
+        <p className="mb-0 whitespace-pre">X_HEIGHT: 5.2mm</p>
+        <p className="mb-0 whitespace-pre">GLYPH_COUNT: 428 [EXTENDED_LATIN]</p>
+        <p className="mb-0 whitespace-pre">&nbsp;</p>
+        <p className="mb-0 whitespace-pre">FILE_FORMAT: .PDF/X-4:2010</p>
+        <p className="mb-0 whitespace-pre">RESOLUTION: 2400 DPI [IMAGE_PULL: 300 PPI]</p>
+        <p className="mb-0 whitespace-pre">COLOR_SPACE: CMYK [FOGRA39]</p>
+        <p className="mb-0 whitespace-pre">BLEED_LIMIT: 3.175mm [0.125in]</p>
+        <p className="mb-0 whitespace-pre">BIT_DEPTH: 16-BIT_CHANNEL</p>
+        <p className="whitespace-pre">RENDER_INTENT: RELATIVE_COLORIMETRIC</p>
+      </div>
 
-            <Card className="text-center cursor-pointer" style={{ background: '#1E1E1E' }}>
-              <div 
-                className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                style={{ background: 'rgba(245, 158, 11, 0.15)' }}
-              >
-                <Camera className="w-7 h-7" style={{ color: '#F59E0B' }} />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                照片管理
-              </h3>
-              <p className="text-sm" style={{ color: '#6B6B6B' }}>
-                云端存储，随时随地查看马匹照片
-              </p>
-            </Card>
+      {/* Technical Info Panel - Bottom Left */}
+      <div className="absolute font-42dot-sans-light text-[21.67px] tracking-[-0.8667px] text-[#fffaee] mix-blend-overlay"
+        style={{ bottom: '2.19%', left: '32.59%' }}>
+        <p className="mb-0 whitespace-pre">EDITABLE MICROGRAPHICS</p>
+        <p className="mb-0 whitespace-pre">TEMPLATES ALL BUILT N FIGMA</p>
+        <p className="mb-0 whitespace-pre">USING GOOGLE FONTS</p>
+        <p className="mb-0 whitespace-pre">LUMINANCE: 0.88 Y</p>
+        <p className="mb-0 whitespace-pre">CONTRAST_RATIO: 21:1 [PASS_AAA]</p>
+        <p className="mb-0 whitespace-pre">&nbsp;</p>
+        <p className="mb-0 whitespace-pre">PRIMARY_FACE: ANTIQUE_OLIVE_NORD [OTF]</p>
+        <p className="mb-0 whitespace-pre">POINT_SIZE: 12.0pt / 120.0pt</p>
+        <p className="mb-0 whitespace-pre">LEADING: 14.5pt [120%]</p>
+        <p className="mb-0 whitespace-pre">TRACKING: -20 / 1000 em</p>
+        <p className="mb-0 whitespace-pre">CAP_HEIGHT: 8.4mm</p>
+        <p className="mb-0 whitespace-pre">X_HEIGHT: 5.2mm</p>
+        <p className="mb-0 whitespace-pre">GLYPH_COUNT: 428 [EXTENDED_LATIN]</p>
+        <p className="mb-0 whitespace-pre">&nbsp;</p>
+        <p className="mb-0 whitespace-pre">FILE_FORMAT: .PDF/X-4:2010</p>
+        <p className="mb-0 whitespace-pre">RESOLUTION: 2400 DPI [IMAGE_PULL: 300 PPI]</p>
+        <p className="mb-0 whitespace-pre">COLOR_SPACE: CMYK [FOGRA39]</p>
+        <p className="mb-0 whitespace-pre">BLEED_LIMIT: 3.175mm [0.125in]</p>
+        <p className="mb-0 whitespace-pre">BIT_DEPTH: 16-BIT_CHANNEL</p>
+        <p className="whitespace-pre">RENDER_INTENT: RELATIVE_COLORIMETRIC</p>
+      </div>
 
-            <Card className="text-center cursor-pointer" style={{ background: '#1E1E1E' }}>
-              <div 
-                className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                style={{ background: 'rgba(239, 68, 68, 0.15)' }}
-              >
-                <Shield className="w-7 h-7" style={{ color: '#EF4444' }} />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                保险管理
-              </h3>
-              <p className="text-sm" style={{ color: '#6B6B6B' }}>
-                保险信息记录和续保提醒
-              </p>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-8 px-6 relative z-10" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        <div className="max-w-6xl mx-auto text-center">
-          <p style={{ color: '#6B6B6B' }} className="text-sm">
-            HorseInfo - 让马匹信息管理更简单
-          </p>
-          <p className="text-xs mt-2" style={{ color: '#4B5563' }}>
-            2024 HorseInfo. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      {/* CTA Buttons - Bottom Right */}
+      <div className="absolute bottom-12 right-12 flex items-center gap-6">
+        <Link
+          href="/auth/register"
+          className="px-8 py-4 rounded-full font-semibold transition-all hover:scale-105"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            color: '#FFFFFF',
+          }}
+        >
+          Create Account
+        </Link>
+        <Link
+          href="/auth/login"
+          className="px-8 py-4 rounded-full font-semibold text-white flex items-center gap-2 transition-all hover:scale-105"
+          style={{
+            background: 'linear-gradient(135deg, #E12E6D, #A855F7)',
+            boxShadow: '0 8px 32px rgba(225, 46, 109, 0.4)',
+          }}
+        >
+          Get Started
+          <ArrowRight className="w-5 h-5" />
+        </Link>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "horse_galleries",
+  "info": {
+    "singularName": "horse-gallery",
+    "pluralName": "horse-galleries",
+    "displayName": "Horse Gallery",
+    "description": "Horse photo gallery with sharing capabilities"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "horse": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::horse.horse",
+      "inversedBy": "galleryPhotos"
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "caption": {
+      "type": "string"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": ["full_body", "close_up", "action", "competition", "other"],
+      "default": "other"
+    },
+    "uploadedBy": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "isPublic": {
+      "type": "boolean",
+      "default": false
+    },
+    "shareToken": {
+      "type": "string"
+    }
+  }
+}

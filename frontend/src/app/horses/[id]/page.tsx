@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import Layout from '@/components/layout/Layout';
-import Card from '@/components/ui/Card';
+import MicrographicsLayout from '@/components/layout/MicrographicsLayout';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Tabs from '@/components/ui/Tabs';
-import { 
-  ArrowLeft, 
-  Edit, 
-  Trash2, 
+import Gallery from '@/components/horse/Gallery';
+import {
+  ArrowLeft,
+  Edit,
+  Trash2,
   Camera,
   Stethoscope,
   Activity,
@@ -20,33 +20,36 @@ import {
   MapPin,
   User,
   FileText,
-  ChevronRight
+  ChevronRight,
+  Scale,
+  Heart,
+  Thermometer,
+  Images
 } from 'lucide-react';
 import Link from 'next/link';
 import { formatDate, calculateAge, genderLabels, statusLabels } from '@/lib/utils';
 
-// Mock data
 const mockHorse = {
   id: '1',
-  name: '闪电',
+  name: 'Thunder',
   gender: 'male' as const,
-  breed: '纯血马',
-  color: '棕色',
+  breed: 'Thoroughbred',
+  color: 'Brown',
   birthDate: '2020-03-15',
   status: 'active' as const,
   microchip: '985141001234567',
   registrationNo: 'TH20200001',
-  stableLocation: 'A区 1号马厩',
-  description: '这是一匹优秀的纯血赛马，具有出色的速度和耐力。在2023年全国速度赛马大赛中获得第三名。',
+  stableLocation: 'Zone A - Stall 1',
+  description: 'An excellent thoroughbred racehorse with outstanding speed and endurance. Placed third in the 2023 National Speed Racing Championship.',
   coverImage: null,
-  owner: { id: '1', name: '张三', email: 'zhangsan@example.com' },
+  owner: { id: '1', name: 'John Doe', email: 'john@example.com' },
   createdAt: '2024-01-15',
 };
 
 const mockMedicalRecords = [
-  { id: '1', recordType: 'vaccination', recordDate: '2024-03-10', description: '狂犬疫苗接种', veterinarian: '张医生' },
-  { id: '2', recordType: 'checkup', recordDate: '2024-02-15', description: '季度体检', veterinarian: '李医生' },
-  { id: '3', recordType: 'dental', recordDate: '2024-01-20', description: '牙科检查和清洗', veterinarian: '王医生' },
+  { id: '1', recordType: 'vaccination', recordDate: '2024-03-10', description: 'Rabies vaccination', veterinarian: 'Dr. Zhang' },
+  { id: '2', recordType: 'checkup', recordDate: '2024-02-15', description: 'Quarterly checkup', veterinarian: 'Dr. Li' },
+  { id: '3', recordType: 'dental', recordDate: '2024-01-20', description: 'Dental checkup and cleaning', veterinarian: 'Dr. Wang' },
 ];
 
 const mockHealthData = [
@@ -56,18 +59,18 @@ const mockHealthData = [
 ];
 
 const mockFeedingRecords = [
-  { id: '1', feedDate: '2024-03-15', feedType: '精饲料', quantity: 5, unit: 'kg', notes: '早餐' },
-  { id: '2', feedDate: '2024-03-15', feedType: '干草', quantity: 8, unit: 'kg', notes: '晚餐' },
+  { id: '1', feedDate: '2024-03-15', feedType: 'Concentrate', quantity: 5, unit: 'kg', notes: 'Breakfast' },
+  { id: '2', feedDate: '2024-03-15', feedType: 'Hay', quantity: 8, unit: 'kg', notes: 'Dinner' },
 ];
 
 const mockCommercialActivities = [
-  { id: '1', activityDate: '2024-02-20', activityType: 'race', title: '全国速度赛马大赛', result: '第三名', prizeMoney: 50000 },
-  { id: '2', activityDate: '2024-01-15', activityType: 'exhibition', title: '国际马术博览会', result: '参与展示' },
+  { id: '1', activityDate: '2024-02-20', activityType: 'race', title: 'National Speed Racing Championship', result: 'Third Place', prizeMoney: 50000 },
+  { id: '2', activityDate: '2024-01-15', activityType: 'exhibition', title: 'International Equestrian Expo', result: 'Exhibition Participant' },
 ];
 
 const mockInsurance = {
   id: '1',
-  provider: '中国人民保险',
+  provider: 'China Pacific Insurance',
   policyNo: 'PI20240001',
   startDate: '2024-01-01',
   endDate: '2025-01-01',
@@ -76,392 +79,424 @@ const mockInsurance = {
   status: 'active' as const,
 };
 
-const mockPhotos = [
-  { id: '1', category: 'full_body', caption: '全身照' },
-  { id: '2', category: 'close_up', caption: '头部特写' },
-  { id: '3', category: 'action', caption: '训练中' },
-  { id: '4', category: 'competition', caption: '比赛现场' },
+const mockPhotos: { id: string; url: string; caption?: string; category: 'full_body' | 'close_up' | 'action' | 'competition' | 'other'; isPublic?: boolean }[] = [
+  { id: '1', url: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=400', caption: 'Full Body Shot', category: 'full_body' },
+  { id: '2', url: 'https://images.unsplash.com/photo-1579541814924-49fef17c5be5?w=400', caption: 'Headshot', category: 'close_up' },
+  { id: '3', url: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=400', caption: 'Training Session', category: 'action' },
+  { id: '4', url: 'https://images.unsplash.com/photo-1534773728080-33df55066a62?w=400', caption: 'Competition Day', category: 'competition' },
 ];
 
 export default function HorseDetailPage() {
   const [activeTab, setActiveTab] = useState('overview');
 
   const user = {
-    name: '张三',
-    email: 'zhangsan@example.com',
+    name: 'John Doe',
+    email: 'john@example.com',
     avatar: null,
   };
 
   const tabs = [
-    { id: 'overview', label: '概览' },
-    { id: 'medical', label: '医疗记录', icon: <Stethoscope className="w-4 h-4" /> },
-    { id: 'health', label: '健康数据', icon: <Activity className="w-4 h-4" /> },
-    { id: 'feeding', label: '喂养记录', icon: <Utensils className="w-4 h-4" /> },
-    { id: 'activities', label: '商业活动', icon: <ShoppingBag className="w-4 h-4" /> },
-    { id: 'insurance', label: '保险信息', icon: <Shield className="w-4 h-4" /> },
+    { id: 'overview', label: 'Overview' },
+    { id: 'photos', label: 'Photos', icon: <Images className="w-4 h-4" /> },
+    { id: 'medical', label: 'Medical', icon: <Stethoscope className="w-4 h-4" /> },
+    { id: 'health', label: 'Health', icon: <Activity className="w-4 h-4" /> },
+    { id: 'feeding', label: 'Feeding', icon: <Utensils className="w-4 h-4" /> },
+    { id: 'activities', label: 'Activities', icon: <ShoppingBag className="w-4 h-4" /> },
+    { id: 'insurance', label: 'Insurance', icon: <Shield className="w-4 h-4" /> },
   ];
 
   const medicalTypeLabels: Record<string, string> = {
-    vaccination: '疫苗接种',
-    checkup: '体检',
-    deworming: '驱虫',
-    dental: '牙科',
-    illness: '疾病',
-    surgery: '手术',
+    vaccination: 'Vaccination',
+    checkup: 'Checkup',
+    deworming: 'Deworming',
+    dental: 'Dental',
+    illness: 'Illness',
+    surgery: 'Surgery',
   };
 
   const activityTypeLabels: Record<string, string> = {
-    race: '赛事',
-    exhibition: '展览',
-    sale: '交易',
-    breeding: '配种',
-    sponsorship: '赞助',
+    race: 'Race',
+    exhibition: 'Exhibition',
+    sale: 'Sale',
+    breeding: 'Breeding',
+    sponsorship: 'Sponsorship',
   };
 
   return (
-    <Layout user={user}>
-      {/* Page Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/horses">
-          <Button variant="ghost" size="sm" leftIcon={<ArrowLeft className="w-4 h-4" />}>
-            返回
-          </Button>
-        </Link>
-        <div className="flex-1">
-          <div className="flex items-center gap-3">
-            <h1 className="heading-2">{mockHorse.name}</h1>
-            <Badge variant={mockHorse.status === 'active' ? 'success' : 'secondary'}>
-              {statusLabels[mockHorse.status]}
-            </Badge>
-          </div>
-          <p className="text-text-secondary">
-            {mockHorse.breed} · {genderLabels[mockHorse.gender]} · {calculateAge(mockHorse.birthDate)}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link href={`/horses/${mockHorse.id}/edit`}>
-            <Button variant="secondary" leftIcon={<Edit className="w-4 h-4" />}>
-              编辑
-            </Button>
+    <MicrographicsLayout variant="dark" fullWidth>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Back Button & Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Link href="/horses">
+            <button className="w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:bg-white/10" style={{ background: 'rgba(255, 255, 255, 0.1)' }}>
+              <ArrowLeft className="w-5 h-5 text-white" />
+            </button>
           </Link>
-          <Button variant="ghost" leftIcon={<Trash2 className="w-4 h-4" />} className="text-error hover:bg-error/10">
-          </Button>
+          <div className="flex-1">
+            <div className="flex items-center gap-4">
+              <h1 className="text-4xl font-bold text-white tracking-tight">{mockHorse.name}</h1>
+              <Badge variant={mockHorse.status === 'active' ? 'success' : 'secondary'}>
+                {statusLabels[mockHorse.status]}
+              </Badge>
+            </div>
+            <p className="text-gray-400 mt-1">
+              {mockHorse.breed} · {genderLabels[mockHorse.gender]} · {calculateAge(mockHorse.birthDate)}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <Link href={`/horses/${mockHorse.id}/edit`}>
+              <Button variant="secondary" className="border-white/20">
+                <Edit className="w-4 h-4" /> Edit
+              </Button>
+            </Link>
+            <Button variant="ghost" className="text-red-400 hover:bg-red-500/10">
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* Tabs */}
-      <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} className="mb-6" />
+        {/* Tabs */}
+        <div className="mb-8">
+          <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+        </div>
 
-      {/* Tab Content */}
-      {activeTab === 'overview' && (
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Photo Gallery */}
-            <Card>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="heading-4">照片集</h2>
-                <Button variant="ghost" size="sm" leftIcon={<Camera className="w-4 h-4" />}>
-                  上传照片
-                </Button>
+        {/* Tab Content */}
+        {activeTab === 'overview' && (
+          <div className="grid lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-8 space-y-6">
+              {/* Photo Gallery */}
+              <div className="rounded-2xl p-6" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                <div className="flex items-center justify-between mb-5">
+                  <h2 className="text-lg font-semibold text-white">Photo Gallery</h2>
+                  <Button variant="ghost" size="sm" className="text-pink-500" onClick={() => setActiveTab('photos')}>
+                    <Camera className="w-4 h-4" /> View All ({mockPhotos.length})
+                  </Button>
+                </div>
+                <div className="grid grid-cols-4 gap-4">
+                  {mockPhotos.slice(0, 4).map((photo) => (
+                    <div
+                      key={photo.id}
+                      className="aspect-square rounded-xl overflow-hidden cursor-pointer hover:opacity-80 transition-all hover:scale-105"
+                      onClick={() => setActiveTab('photos')}
+                    >
+                      <img
+                        src={photo.url}
+                        alt={photo.caption}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-4 gap-3">
-                {mockPhotos.map((photo) => (
-                  <div key={photo.id} className="aspect-square bg-gradient-to-br from-accent/20 to-accent/5 rounded-xl flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
-                    <Camera className="w-8 h-8 text-accent/50" />
+
+              {/* Basic Info */}
+              <div className="rounded-2xl p-6" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                <h2 className="text-lg font-semibold text-white mb-5">Basic Information</h2>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {[
+                    { label: 'Breed', value: mockHorse.breed },
+                    { label: 'Gender', value: genderLabels[mockHorse.gender] },
+                    { label: 'Color', value: mockHorse.color },
+                    { label: 'Age', value: calculateAge(mockHorse.birthDate) },
+                    { label: 'Microchip', value: mockHorse.microchip, mono: true },
+                    { label: 'Registration No.', value: mockHorse.registrationNo, mono: true },
+                  ].map((item) => (
+                    <div key={item.label} className="p-4 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
+                      <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{item.label}</p>
+                      <p className={`text-white font-medium ${item.mono ? 'font-mono' : ''}`}>{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+                {mockHorse.description && (
+                  <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Notes</p>
+                    <p className="text-gray-300">{mockHorse.description}</p>
                   </div>
-                ))}
+                )}
               </div>
-            </Card>
 
-            {/* Basic Info Card */}
-            <Card>
-              <h2 className="heading-4 mb-4">基本信息</h2>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-text-secondary">品种</p>
-                  <p className="text-text-primary font-medium">{mockHorse.breed}</p>
+              {/* Location & Owner */}
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div className="rounded-2xl p-6" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(225, 46, 109, 0.2)' }}>
+                      <MapPin className="w-5 h-5 text-pink-500" />
+                    </div>
+                    <h2 className="text-lg font-semibold text-white">Location</h2>
+                  </div>
+                  <p className="text-white font-medium">{mockHorse.stableLocation}</p>
                 </div>
-                <div>
-                  <p className="text-sm text-text-secondary">性别</p>
-                  <p className="text-text-primary font-medium">{genderLabels[mockHorse.gender]}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-text-secondary">毛色</p>
-                  <p className="text-text-primary font-medium">{mockHorse.color}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-text-secondary">年龄</p>
-                  <p className="text-text-primary font-medium">{calculateAge(mockHorse.birthDate)}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-text-secondary">芯片号</p>
-                  <p className="text-text-primary font-medium font-mono">{mockHorse.microchip}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-text-secondary">血统证书号</p>
-                  <p className="text-text-primary font-medium font-mono">{mockHorse.registrationNo}</p>
+                <div className="rounded-2xl p-6" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(168, 85, 247, 0.2)' }}>
+                      <User className="w-5 h-5 text-purple-500" />
+                    </div>
+                    <h2 className="text-lg font-semibold text-white">Owner</h2>
+                  </div>
+                  <p className="text-white font-medium">{mockHorse.owner.name}</p>
+                  <p className="text-sm text-gray-400">{mockHorse.owner.email}</p>
                 </div>
               </div>
-              {mockHorse.description && (
-                <div className="mt-4 pt-4 border-t border-border">
-                  <p className="text-sm text-text-secondary mb-2">备注</p>
-                  <p className="text-text-primary">{mockHorse.description}</p>
-                </div>
-              )}
-            </Card>
+            </div>
 
-            {/* Location & Owner */}
-            <div className="grid sm:grid-cols-2 gap-6">
-              <Card>
-                <div className="flex items-center gap-3 mb-4">
-                  <MapPin className="w-5 h-5 text-accent" />
-                  <h2 className="heading-4">位置</h2>
+            {/* Sidebar */}
+            <div className="lg:col-span-4 space-y-6">
+              {/* Quick Stats */}
+              <div className="rounded-2xl p-6" style={{ background: 'linear-gradient(135deg, rgba(225, 46, 109, 0.15), rgba(168, 85, 247, 0.1))', border: '1px solid rgba(225, 46, 109, 0.3)' }}>
+                <h3 className="text-lg font-semibold text-white mb-5">Quick Stats</h3>
+                <div className="space-y-4">
+                  {[
+                    { label: 'Medical Records', value: mockMedicalRecords.length, color: '#10B981' },
+                    { label: 'Health Data', value: mockHealthData.length, color: '#F59E0B' },
+                    { label: 'Activities', value: mockCommercialActivities.length, color: '#A855F7' },
+                    { label: 'Photos', value: mockPhotos.length, color: '#E12E6D' },
+                  ].map((stat) => (
+                    <div key={stat.label} className="flex items-center justify-between">
+                      <span className="text-gray-300">{stat.label}</span>
+                      <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ background: `${stat.color}20`, color: stat.color }}>
+                        {stat.value}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-                <p className="text-text-primary font-medium">{mockHorse.stableLocation}</p>
-              </Card>
-              <Card>
-                <div className="flex items-center gap-3 mb-4">
-                  <User className="w-5 h-5 text-accent" />
-                  <h2 className="heading-4">马主</h2>
+              </div>
+
+              {/* Insurance */}
+              <div className="rounded-2xl p-6" style={{ background: '#0A0A0A', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <Shield className="w-5 h-5 text-emerald-500" />
+                    <h3 className="text-lg font-semibold text-white">Insurance</h3>
+                  </div>
+                  <Badge variant="success">Active</Badge>
                 </div>
-                <p className="text-text-primary font-medium">{mockHorse.owner.name}</p>
-                <p className="text-sm text-text-secondary">{mockHorse.owner.email}</p>
-              </Card>
+                <p className="text-sm text-gray-400 mb-1">{mockInsurance.provider}</p>
+                <p className="text-white font-mono font-medium">{mockInsurance.policyNo}</p>
+                <p className="text-sm text-gray-400 mt-3">
+                  Valid until {formatDate(mockInsurance.endDate)}
+                </p>
+              </div>
+
+              {/* Recent Medical */}
+              <div className="rounded-2xl p-6" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-white">Recent Medical</h3>
+                  <Link href={`/horses/${mockHorse.id}/medical`}>
+                    <Button variant="ghost" size="sm" className="text-pink-500">
+                      View all <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                </div>
+                <div className="space-y-3">
+                  {mockMedicalRecords.slice(0, 2).map((record) => (
+                    <div key={record.id} className="p-4 rounded-xl" style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
+                      <p className="text-sm text-white font-medium">{record.description}</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {formatDate(record.recordDate)} · {record.veterinarian}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Latest Vitals */}
+              <div className="rounded-2xl p-6" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                <h3 className="text-lg font-semibold text-white mb-5">Latest Vitals</h3>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center" style={{ background: 'rgba(225, 46, 109, 0.15)' }}>
+                      <Scale className="w-6 h-6 text-pink-500" />
+                    </div>
+                    <p className="text-2xl font-bold text-white">{mockHealthData[0].weight}</p>
+                    <p className="text-xs text-gray-500">kg</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center" style={{ background: 'rgba(239, 68, 68, 0.15)' }}>
+                      <Heart className="w-6 h-6 text-red-500" />
+                    </div>
+                    <p className="text-2xl font-bold text-white">{mockHealthData[0].heartRate}</p>
+                    <p className="text-xs text-gray-500">bpm</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center" style={{ background: 'rgba(245, 158, 11, 0.15)' }}>
+                      <Thermometer className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <p className="text-2xl font-bold text-white">{mockHealthData[0].temperature}</p>
+                    <p className="text-xs text-gray-500">°C</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+        )}
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Stats */}
-            <Card>
-              <h3 className="heading-4 mb-4">快速统计</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-text-secondary">医疗记录</span>
-                  <Badge variant="primary">{mockMedicalRecords.length}</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-text-secondary">健康数据</span>
-                  <Badge variant="success">{mockHealthData.length}</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-text-secondary">商业活动</span>
-                  <Badge variant="warning">{mockCommercialActivities.length}</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-text-secondary">照片</span>
-                  <Badge variant="secondary">{mockPhotos.length}</Badge>
-                </div>
-              </div>
-            </Card>
-
-            {/* Insurance Summary */}
-            <Card>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <Shield className="w-5 h-5 text-success" />
-                  <h3 className="heading-4">保险</h3>
-                </div>
-                <Badge variant="success">生效中</Badge>
-              </div>
-              <p className="text-sm text-text-secondary mb-1">{mockInsurance.provider}</p>
-              <p className="text-text-primary font-medium font-mono">{mockInsurance.policyNo}</p>
-              <p className="text-sm text-text-secondary mt-2">
-                有效期至 {formatDate(mockInsurance.endDate)}
-              </p>
-            </Card>
-
-            {/* Recent Medical */}
-            <Card>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="heading-4">最近医疗</h3>
-                <Link href={`/horses/${mockHorse.id}/medical`}>
-                  <Button variant="ghost" size="sm" rightIcon={<ChevronRight className="w-4 h-4" />}>
-                    查看全部
-                  </Button>
-                </Link>
-              </div>
-              <div className="space-y-3">
-                {mockMedicalRecords.slice(0, 2).map((record) => (
-                  <div key={record.id} className="p-3 bg-background-secondary rounded-lg">
-                    <p className="text-sm text-text-primary font-medium">{record.description}</p>
-                    <p className="text-xs text-text-secondary mt-1">
-                      {formatDate(record.recordDate)} · {record.veterinarian}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            {/* Recent Health */}
-            <Card>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="heading-4">最新体重</h3>
-                <span className="text-2xl font-bold text-accent">{mockHealthData[0].weight} kg</span>
-              </div>
-              <p className="text-sm text-text-secondary">
-                {formatDate(mockHealthData[0].recordDate)} 记录
-              </p>
-            </Card>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'medical' && (
-        <Card>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="heading-3">医疗记录</h2>
-            <Button leftIcon={<Stethoscope className="w-4 h-4" />}>添加记录</Button>
-          </div>
-          <div className="space-y-4">
-            {mockMedicalRecords.map((record) => (
-              <div key={record.id} className="flex items-start gap-4 p-4 bg-background-secondary rounded-xl">
-                <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Stethoscope className="w-5 h-5 text-success" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge variant="primary">{medicalTypeLabels[record.recordType]}</Badge>
-                    <span className="text-sm text-text-secondary">{formatDate(record.recordDate)}</span>
-                  </div>
-                  <p className="text-text-primary">{record.description}</p>
-                  <p className="text-sm text-text-secondary mt-1">兽医: {record.veterinarian}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {activeTab === 'health' && (
-        <div className="space-y-6">
-          <Card>
+        {activeTab === 'photos' && (
+          <div className="rounded-2xl p-6" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="heading-3">健康数据</h2>
-              <Button leftIcon={<Activity className="w-4 h-4" />}>添加数据</Button>
+              <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                <Images className="w-6 h-6 text-pink-500" />
+                Photo Gallery
+              </h2>
+              <Button variant="gradient">
+                <Camera className="w-4 h-4" /> Upload Photos
+              </Button>
+            </div>
+            <Gallery
+              photos={mockPhotos}
+              horseId={mockHorse.id}
+              readOnly={false}
+            />
+          </div>
+        )}
+
+        {activeTab === 'medical' && (
+          <div className="rounded-2xl p-8" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white">Medical Records</h2>
+              <Button className="shadow-lg">
+                <Stethoscope className="w-4 h-4" /> Add Record
+              </Button>
+            </div>
+            <div className="space-y-4">
+              {mockMedicalRecords.map((record) => (
+                <div key={record.id} className="flex items-start gap-4 p-5 rounded-xl transition-all hover:bg-white/5" style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(16, 185, 129, 0.2)' }}>
+                    <Stethoscope className="w-6 h-6 text-emerald-500" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Badge variant="success">{medicalTypeLabels[record.recordType]}</Badge>
+                      <span className="text-sm text-gray-400">{formatDate(record.recordDate)}</span>
+                    </div>
+                    <p className="text-white font-medium mb-1">{record.description}</p>
+                    <p className="text-sm text-gray-400">Vet: {record.veterinarian}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'health' && (
+          <div className="rounded-2xl p-8" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white">Health Data</h2>
+              <Button className="shadow-lg">
+                <Activity className="w-4 h-4" /> Add Data
+              </Button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">日期</th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">体重 (kg)</th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">心率 (bpm)</th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">体温 (°C)</th>
+                  <tr className="border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+                    <th className="text-left py-4 px-4 text-sm font-medium text-gray-400">Date</th>
+                    <th className="text-left py-4 px-4 text-sm font-medium text-gray-400">Weight (kg)</th>
+                    <th className="text-left py-4 px-4 text-sm font-medium text-gray-400">Heart Rate (bpm)</th>
+                    <th className="text-left py-4 px-4 text-sm font-medium text-gray-400">Temp (°C)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {mockHealthData.map((data) => (
-                    <tr key={data.id} className="border-b border-border last:border-0 hover:bg-background-secondary/50">
-                      <td className="py-3 px-4 text-text-primary">{formatDate(data.recordDate)}</td>
-                      <td className="py-3 px-4 text-text-primary font-mono">{data.weight}</td>
-                      <td className="py-3 px-4 text-text-primary font-mono">{data.heartRate}</td>
-                      <td className="py-3 px-4 text-text-primary font-mono">{data.temperature}</td>
+                    <tr key={data.id} className="border-b transition-colors hover:bg-white/5" style={{ borderColor: 'rgba(255, 255, 255, 0.05)' }}>
+                      <td className="py-4 px-4 text-white">{formatDate(data.recordDate)}</td>
+                      <td className="py-4 px-4 text-white font-mono">{data.weight}</td>
+                      <td className="py-4 px-4 text-white font-mono">{data.heartRate}</td>
+                      <td className="py-4 px-4 text-white font-mono">{data.temperature}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </Card>
-        </div>
-      )}
+          </div>
+        )}
 
-      {activeTab === 'feeding' && (
-        <Card>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="heading-3">喂养记录</h2>
-            <Button leftIcon={<Utensils className="w-4 h-4" />}>添加记录</Button>
-          </div>
-          <div className="space-y-4">
-            {mockFeedingRecords.map((record) => (
-              <div key={record.id} className="flex items-center gap-4 p-4 bg-background-secondary rounded-xl">
-                <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Utensils className="w-5 h-5 text-accent" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-text-primary font-medium">{record.feedType}</p>
-                  <p className="text-sm text-text-secondary">{record.quantity} {record.unit}</p>
-                </div>
-                <span className="text-sm text-text-muted">{formatDate(record.feedDate)}</span>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {activeTab === 'activities' && (
-        <Card>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="heading-3">商业活动</h2>
-            <Button leftIcon={<ShoppingBag className="w-4 h-4" />}>添加活动</Button>
-          </div>
-          <div className="space-y-4">
-            {mockCommercialActivities.map((activity) => (
-              <div key={activity.id} className="flex items-start gap-4 p-4 bg-background-secondary rounded-xl">
-                <div className="w-10 h-10 bg-warning/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <ShoppingBag className="w-5 h-5 text-warning" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge variant="warning">{activityTypeLabels[activity.activityType]}</Badge>
-                    <span className="text-sm text-text-secondary">{formatDate(activity.activityDate)}</span>
-                  </div>
-                  <p className="text-text-primary font-medium">{activity.title}</p>
-                  <p className="text-sm text-text-secondary mt-1">{activity.result}</p>
-                  {activity.prizeMoney && (
-                    <p className="text-sm text-success mt-1">奖金: ¥{activity.prizeMoney.toLocaleString()}</p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {activeTab === 'insurance' && (
-        <div className="grid lg:grid-cols-2 gap-6">
-          <Card>
+        {activeTab === 'feeding' && (
+          <div className="rounded-2xl p-8" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="heading-3">保险信息</h2>
-              <Badge variant="success">生效中</Badge>
+              <h2 className="text-2xl font-bold text-white">Feeding Records</h2>
+              <Button className="shadow-lg">
+                <Utensils className="w-4 h-4" /> Add Record
+              </Button>
             </div>
             <div className="space-y-4">
-              <div>
-                <p className="text-sm text-text-secondary">保险公司</p>
-                <p className="text-text-primary font-medium">{mockInsurance.provider}</p>
+              {mockFeedingRecords.map((record) => (
+                <div key={record.id} className="flex items-center gap-4 p-5 rounded-xl" style={{ background: 'rgba(225, 46, 109, 0.1)', border: '1px solid rgba(225, 46, 109, 0.2)' }}>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(225, 46, 109, 0.2)' }}>
+                    <Utensils className="w-6 h-6 text-pink-500" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-white font-medium">{record.feedType}</p>
+                    <p className="text-sm text-gray-400">{record.quantity} {record.unit} · {record.notes}</p>
+                  </div>
+                  <span className="text-sm text-gray-400">{formatDate(record.feedDate)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'activities' && (
+          <div className="rounded-2xl p-8" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white">Commercial Activities</h2>
+              <Button className="shadow-lg">
+                <ShoppingBag className="w-4 h-4" /> Add Activity
+              </Button>
+            </div>
+            <div className="space-y-4">
+              {mockCommercialActivities.map((activity) => (
+                <div key={activity.id} className="flex items-start gap-4 p-5 rounded-xl" style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(245, 158, 11, 0.2)' }}>
+                    <ShoppingBag className="w-6 h-6 text-amber-500" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Badge variant="warning">{activityTypeLabels[activity.activityType]}</Badge>
+                      <span className="text-sm text-gray-400">{formatDate(activity.activityDate)}</span>
+                    </div>
+                    <p className="text-white font-medium">{activity.title}</p>
+                    <p className="text-sm text-gray-400 mt-1">{activity.result}</p>
+                    {activity.prizeMoney && (
+                      <p className="text-sm font-medium mt-2" style={{ color: '#10B981' }}>
+                        Prize: ${activity.prizeMoney.toLocaleString()}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'insurance' && (
+          <div className="grid lg:grid-cols-2 gap-8">
+            <div className="rounded-2xl p-8" style={{ background: '#0A0A0A', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-white">Insurance Information</h2>
+                <Badge variant="success">Active</Badge>
               </div>
-              <div>
-                <p className="text-sm text-text-secondary">保单号</p>
-                <p className="text-text-primary font-medium font-mono">{mockInsurance.policyNo}</p>
+              <div className="space-y-4">
+                {[
+                  { label: 'Provider', value: mockInsurance.provider },
+                  { label: 'Policy No.', value: mockInsurance.policyNo, mono: true },
+                  { label: 'Start Date', value: formatDate(mockInsurance.startDate) },
+                  { label: 'End Date', value: formatDate(mockInsurance.endDate) },
+                  { label: 'Coverage Amount', value: `$${mockInsurance.coverageAmount.toLocaleString()}` },
+                  { label: 'Premium', value: `$${mockInsurance.premium.toLocaleString()}` },
+                ].map((item) => (
+                  <div key={item.label} className="p-4 rounded-xl" style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{item.label}</p>
+                    <p className={`text-white font-medium ${item.mono ? 'font-mono' : ''}`}>{item.value}</p>
+                  </div>
+                ))}
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-text-secondary">生效日期</p>
-                  <p className="text-text-primary font-medium">{formatDate(mockInsurance.startDate)}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-text-secondary">到期日期</p>
-                  <p className="text-text-primary font-medium">{formatDate(mockInsurance.endDate)}</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-text-secondary">保额</p>
-                  <p className="text-text-primary font-medium">¥{mockInsurance.coverageAmount.toLocaleString()}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-text-secondary">保费</p>
-                  <p className="text-text-primary font-medium">¥{mockInsurance.premium.toLocaleString()}</p>
-                </div>
+              <div className="mt-6 pt-6" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                <Button variant="secondary" className="w-full">Update Insurance</Button>
               </div>
             </div>
-            <div className="mt-6 pt-4 border-t border-border">
-              <Button variant="secondary" className="w-full">更新保险信息</Button>
-            </div>
-          </Card>
-        </div>
-      )}
-    </Layout>
+          </div>
+        )}
+      </div>
+    </MicrographicsLayout>
   );
 }

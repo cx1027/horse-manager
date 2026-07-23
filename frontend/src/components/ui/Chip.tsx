@@ -19,10 +19,10 @@ const Chip: React.FC<ChipProps> = ({
 }) => {
   const variants = {
     default: 'bg-background-secondary text-text-secondary',
-    primary: 'bg-accent/20 text-accent',
-    success: 'bg-success/20 text-success',
-    warning: 'bg-warning/20 text-warning',
-    error: 'bg-error/20 text-error',
+    primary: 'bg-accent-muted text-accent',
+    success: 'bg-success-soft text-success',
+    warning: 'bg-warning-soft text-warning',
+    error: 'bg-error-soft text-error',
   };
 
   return (
