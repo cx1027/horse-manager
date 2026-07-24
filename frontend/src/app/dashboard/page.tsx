@@ -129,20 +129,16 @@ export default function DashboardPage() {
 
           {/* Page Content */}
           <main className="px-4 pb-20 lg:pb-8 lg:pl-0">
-            {/* Greeting - Layer #23 Typography - Serif for elegance */}
+            {/* Greeting - Same style as date label */}
             <div className="pt-6 pb-8">
               <h1 
-                className="font-instrument-serif text-2xl lg:text-3xl tracking-tight"
-                style={{ color: 'var(--mg-text-primary)' }}
+                className="mg-label"
+                style={{ fontSize: '1.25rem', textTransform: 'none', letterSpacing: 'var(--mg-tracking-tight)', color: 'var(--mg-text-primary)' }}
               >
                 {getGreeting()}, {displayName}
               </h1>
               <p 
-                className="text-xs font-light mt-3 tracking-wide uppercase"
-                style={{ 
-                  fontFamily: 'var(--mg-font-sans)',
-                  color: 'var(--mg-text-muted)'
-                }}
+                className="mg-label mt-3"
               >
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
               </p>
@@ -151,21 +147,13 @@ export default function DashboardPage() {
             {/* My Barn Section */}
             <div className="flex items-center justify-between mb-4">
               <h2 
-                className="text-sm font-light tracking-wide"
-                style={{ 
-                  fontFamily: 'var(--mg-font-sans)',
-                  color: 'var(--mg-text-secondary)'
-                }}
+                className="mg-title"
               >
                 My Barn
               </h2>
               <Link 
                 href="/horses" 
-                className="text-xs font-light"
-                style={{ 
-                  fontFamily: 'var(--mg-font-sans)',
-                  color: 'var(--mg-text-muted)'
-                }}
+                className="mg-helper"
               >
                 See all
               </Link>
@@ -194,20 +182,12 @@ export default function DashboardPage() {
                     {/* Horse Info */}
                     <div>
                       <h3 
-                        className="text-sm font-light truncate"
-                        style={{ 
-                          fontFamily: 'var(--mg-font-sans)',
-                          color: 'var(--mg-text-primary)'
-                        }}
+                        className="mg-body truncate"
                       >
                         {horse.name}
                       </h3>
                       <p 
-                        className="text-[11px] font-light truncate mt-0.5"
-                        style={{ 
-                          fontFamily: 'var(--mg-font-sans)',
-                          color: 'var(--mg-text-muted)'
-                        }}
+                        className="mg-helper truncate mt-0.5"
                       >
                         {horse.breed || 'Unknown breed'}
                       </p>
@@ -227,6 +207,7 @@ export default function DashboardPage() {
                 <Card
                   variant="micrographics"
                   padding="sm"
+                  borderStyle="dashed"
                   className="h-full min-h-[180px] flex flex-col items-center justify-center"
                 >
                   <div
@@ -236,11 +217,7 @@ export default function DashboardPage() {
                     <Plus className="w-5 h-5" style={{ color: 'var(--mg-text-muted)' }} />
                   </div>
                   <span 
-                    className="text-xs font-light"
-                    style={{ 
-                      fontFamily: 'var(--mg-font-sans)',
-                      color: 'var(--mg-text-muted)'
-                    }}
+                    className="mg-helper"
                   >
                     Add Horse
                   </span>

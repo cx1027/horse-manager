@@ -6,6 +6,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
 
 /* Custom Fonts for Micrographics - Layer #23 */
 @font-face {
@@ -82,10 +84,10 @@
   
   /* Typography Scale */
   --mg-font-display: 'Instrument Serif', Georgia, serif;
-  --mg-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --mg-font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --mg-font-sans: 'Space Grotesk', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mg-font-mono: 'Space Mono', 'IBM Plex Mono', 'Courier New', monospace;
   
-  /* Font Sizes - Following Figma's refined scale */
+  /* Font Sizes - REFINED style (smaller, more refined) */
   --mg-text-xs: 0.6875rem;    /* 11px - tiny labels */
   --mg-text-sm: 0.75rem;      /* 12px - nav items, captions */
   --mg-text-base: 0.8125rem;   /* 13px - body text */
@@ -93,22 +95,29 @@
   --mg-text-xl: 1rem;          /* 16px - page titles */
   --mg-text-2xl: 1.25rem;      /* 20px - display */
   --mg-text-3xl: 1.5rem;       /* 24px - hero */
+  --mg-text-4xl: 2rem;         /* 32px - large hero */
+  --mg-text-5xl: 2.25rem;      /* 36px - hero display */
   
-  /* Font Weights - Much lighter than default */
+  /* Font Weights - REFINED style (much lighter) */
+  --mg-weight-thin: 100;
   --mg-weight-light: 300;
   --mg-weight-regular: 400;
   --mg-weight-medium: 500;
   
   /* Line Heights */
-  --mg-leading-tight: 1.2;
+  --mg-leading-none: 1;
+  --mg-leading-tight: 1.15;
+  --mg-leading-snug: 1.3;
   --mg-leading-normal: 1.5;
   --mg-leading-relaxed: 1.65;
   
-  /* Letter Spacing */
+  /* Letter Spacing - REFINED style (wider for labels) */
+  --mg-tracking-tighter: -0.03em;
   --mg-tracking-tight: -0.02em;
   --mg-tracking-normal: 0;
-  --mg-tracking-wide: 0.05em;
-  --mg-tracking-wider: 0.1em;
+  --mg-tracking-wide: 0.04em;
+  --mg-tracking-wider: 0.08em;
+  --mg-tracking-widest: 0.12em;
   
   /* Colors - Layer #23 palette */
   --mg-bg: #FFFFFF;
@@ -204,10 +213,82 @@ body {
   }
   
   /* ============================================
-     MICROGRAPHICS UTILITIES - Use these classes
+     REFINED TYPOGRAPHY UTILITIES - REFINED_DIGITAL_ARTIFACTS style
      ============================================ */
   
-  /* Text utilities */
+  /* Display/Title - Serif, thin, tight tracking */
+  .mg-display {
+    font-family: var(--mg-font-display);
+    font-size: var(--mg-text-3xl);
+    font-weight: 400;
+    line-height: var(--mg-leading-tight);
+    letter-spacing: var(--mg-tracking-tight);
+    color: var(--mg-text-primary);
+  }
+  
+  .mg-display-lg {
+    font-family: var(--mg-font-display);
+    font-size: var(--mg-text-5xl);
+    font-weight: 400;
+    line-height: var(--mg-leading-none);
+    letter-spacing: var(--mg-tracking-tighter);
+    color: var(--mg-text-primary);
+  }
+  
+  /* Section Title - Sans, light, normal tracking */
+  .mg-title {
+    font-family: var(--mg-font-sans);
+    font-size: var(--mg-text-lg);
+    font-weight: var(--mg-weight-light);
+    line-height: var(--mg-leading-normal);
+    letter-spacing: var(--mg-tracking-normal);
+    color: var(--mg-text-secondary);
+  }
+  
+  /* Body Text - Sans, light */
+  .mg-body {
+    font-family: var(--mg-font-sans);
+    font-size: var(--mg-text-base);
+    font-weight: var(--mg-weight-light);
+    line-height: var(--mg-leading-relaxed);
+    letter-spacing: var(--mg-tracking-normal);
+    color: var(--mg-text-primary);
+  }
+  
+  /* Labels/Caps - Small, uppercase, wide tracking */
+  .mg-label {
+    font-family: var(--mg-font-sans);
+    font-size: var(--mg-text-xs);
+    font-weight: var(--mg-weight-light);
+    line-height: var(--mg-leading-normal);
+    letter-spacing: var(--mg-tracking-widest);
+    text-transform: uppercase;
+    color: var(--mg-text-muted);
+  }
+  
+  /* Helper Text - Small, subtle */
+  .mg-helper {
+    font-family: var(--mg-font-sans);
+    font-size: var(--mg-text-xs);
+    font-weight: var(--mg-weight-light);
+    line-height: var(--mg-leading-normal);
+    letter-spacing: var(--mg-tracking-wide);
+    color: var(--mg-text-muted);
+  }
+  
+  /* Mono/Technical - For data, numbers */
+  .mg-mono {
+    font-family: var(--mg-font-mono);
+    font-size: var(--mg-text-sm);
+    font-weight: var(--mg-weight-regular);
+    letter-spacing: var(--mg-tracking-normal);
+    color: var(--mg-text-secondary);
+  }
+  
+  /* ============================================
+     MICROGRAPHICS UTILITIES
+     ============================================ */
+  
   .mg-text {
     font-family: var(--mg-font-sans);
     font-weight: var(--mg-weight-regular);

@@ -8,9 +8,10 @@ interface CardProps {
   padding?: "none" | "sm" | "md" | "lg";
   style?: React.CSSProperties;
   variant?: "default" | "micrographics";
+  borderStyle?: "solid" | "dashed";
 }
 
-export default function Card({ children, className = "", onClick, padding = "md", style, variant = "default" }: CardProps) {
+export default function Card({ children, className = "", onClick, padding = "md", style, variant = "default", borderStyle = "solid" }: CardProps) {
   const paddingStyles = {
     none: "",
     sm: "p-3",
@@ -32,7 +33,7 @@ export default function Card({ children, className = "", onClick, padding = "md"
         )}
         style={{
           background: 'transparent',
-          border: '1px solid var(--mg-border-subtle)',
+          border: `1px ${borderStyle} var(--mg-border-subtle)`,
           ...style,
         }}
         onClick={onClick}
