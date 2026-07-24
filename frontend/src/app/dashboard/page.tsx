@@ -209,6 +209,7 @@ export default function DashboardPage() {
                   padding="sm"
                   borderStyle="dashed"
                   className="h-full min-h-[180px] flex flex-col items-center justify-center"
+                  style={{ borderColor: '#FFFFFF' }}
                 >
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
