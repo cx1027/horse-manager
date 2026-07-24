@@ -1,23 +1,48 @@
 import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface CardProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   onClick?: () => void;
   padding?: "none" | "sm" | "md" | "lg";
   style?: React.CSSProperties;
+  variant?: "default" | "micrographics";
 }
 
-export default function Card({ children, className = "", onClick, padding = "md", style }: CardProps) {
+export default function Card({ children, className = "", onClick, padding = "md", style, variant = "default" }: CardProps) {
   const paddingStyles = {
     none: "",
-    sm: "p-4",
-    md: "p-5",
-    lg: "p-6",
+    sm: "p-3",
+    md: "p-4",
+    lg: "p-5",
   };
 
   const Component = onClick ? "button" : "div";
-  
+
+  // Micrographics variant - transparent, minimal
+  if (variant === 'micrographics') {
+    return (
+      <Component
+        className={cn(
+          "rounded-lg transition-all",
+          paddingStyles[padding],
+          onClick ? "cursor-pointer hover:bg-white/50 w-full text-left" : "",
+          className
+        )}
+        style={{
+          background: 'transparent',
+          border: '1px solid var(--mg-border-subtle)',
+          ...style,
+        }}
+        onClick={onClick}
+      >
+        {children}
+      </Component>
+    );
+  }
+
+  // Default variant
   return (
     <Component
       className={`bg-background-card rounded-xl border border-border ${paddingStyles[padding]} ${onClick ? "cursor-pointer hover:shadow-elevated transition-shadow w-full text-left" : ""} ${className}`}

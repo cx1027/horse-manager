@@ -4,11 +4,21 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
 
-/* Custom Fonts for Micrographics */
+/* Custom Fonts for Micrographics - Layer #23 */
 @font-face {
   font-family: '42dot Sans';
-  src: url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+  src: url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300&display=swap');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: '42dot Sans';
+  src: url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400&display=swap');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -16,8 +26,8 @@
 
 @font-face {
   font-family: '42dot Sans';
-  src: url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
-  font-weight: 300;
+  src: url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500&display=swap');
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
@@ -40,7 +50,7 @@
 
   /* Surface */
   --color-surface: #FFFFFF;
-  --color-surface-primary: #1E1E1E;
+  --color-surface-primary: #1E1A1A;
   --color-surface-secondary: #2A2A2A;
   --color-surface-elevated: #F5F5F5;
 
@@ -65,6 +75,91 @@
   --color-error-soft: rgba(239, 68, 68, 0.15);
   --color-info: #2A82EB;
   --color-info-soft: rgba(42, 130, 235, 0.15);
+
+  /* ============================================
+     UNIFIED MICROGRAPHICS DESIGN SYSTEM - Layer #23
+     ============================================ */
+  
+  /* Typography Scale */
+  --mg-font-display: 'Instrument Serif', Georgia, serif;
+  --mg-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mg-font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  
+  /* Font Sizes - Following Figma's refined scale */
+  --mg-text-xs: 0.6875rem;    /* 11px - tiny labels */
+  --mg-text-sm: 0.75rem;      /* 12px - nav items, captions */
+  --mg-text-base: 0.8125rem;   /* 13px - body text */
+  --mg-text-lg: 0.875rem;      /* 14px - section titles */
+  --mg-text-xl: 1rem;          /* 16px - page titles */
+  --mg-text-2xl: 1.25rem;      /* 20px - display */
+  --mg-text-3xl: 1.5rem;       /* 24px - hero */
+  
+  /* Font Weights - Much lighter than default */
+  --mg-weight-light: 300;
+  --mg-weight-regular: 400;
+  --mg-weight-medium: 500;
+  
+  /* Line Heights */
+  --mg-leading-tight: 1.2;
+  --mg-leading-normal: 1.5;
+  --mg-leading-relaxed: 1.65;
+  
+  /* Letter Spacing */
+  --mg-tracking-tight: -0.02em;
+  --mg-tracking-normal: 0;
+  --mg-tracking-wide: 0.05em;
+  --mg-tracking-wider: 0.1em;
+  
+  /* Colors - Layer #23 palette */
+  --mg-bg: #FFFFFF;
+  --mg-bg-opacity: 0.58;
+  --mg-bg-paper: #F8F8F8;
+  
+  --mg-text-primary: #000000;
+  --mg-text-secondary: rgba(0, 0, 0, 0.6);
+  --mg-text-muted: rgba(0, 0, 0, 0.4);
+  --mg-text-placeholder: rgba(0, 0, 0, 0.3);
+  
+  --mg-border: rgba(0, 0, 0, 0.08);
+  --mg-border-subtle: rgba(0, 0, 0, 0.05);
+  --mg-border-emphasis: rgba(0, 0, 0, 0.12);
+  
+  /* Navigation specific */
+  --mg-nav-bg: transparent;
+  --mg-nav-bg-hover: rgba(0, 0, 0, 0.04);
+  --mg-nav-bg-active: rgba(0, 0, 0, 0.06);
+  --mg-nav-text: rgba(0, 0, 0, 0.7);
+  --mg-nav-text-muted: rgba(0, 0, 0, 0.4);
+  --mg-nav-text-active: #000000;
+  
+  /* Active indicator - dot style like Figma */
+  --mg-nav-indicator: #000000;
+  --mg-nav-indicator-size: 4px;
+  
+  /* Surfaces */
+  --mg-surface: rgba(255, 255, 255, 0.85);
+  --mg-surface-hover: rgba(255, 255, 255, 0.95);
+  --mg-surface-card: rgba(255, 255, 255, 0.7);
+  
+  /* Icons */
+  --mg-icon-size-sm: 14px;
+  --mg-icon-size-base: 16px;
+  --mg-icon-size-lg: 18px;
+  
+  /* Spacing rhythm */
+  --mg-space-1: 4px;
+  --mg-space-2: 8px;
+  --mg-space-3: 12px;
+  --mg-space-4: 16px;
+  --mg-space-5: 20px;
+  --mg-space-6: 24px;
+  --mg-space-8: 32px;
+  
+  /* Border radius */
+  --mg-radius-sm: 4px;
+  --mg-radius-base: 8px;
+  --mg-radius-lg: 12px;
+  --mg-radius-full: 9999px;
 }
 
 * {
@@ -88,18 +183,101 @@ body {
 }
 
 @layer utilities {
-  /* Micrographics Typography */
+  /* Default typography */
   .font-42dot-sans {
-    font-family: 'DM Sans', '42dot Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--mg-font-sans);
+    font-weight: var(--mg-weight-regular);
   }
 
   .font-42dot-sans-light {
-    font-family: 'DM Sans', '42dot Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-weight: 300;
+    font-family: var(--mg-font-sans);
+    font-weight: var(--mg-weight-light);
   }
 
   .font-instrument-serif {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--mg-font-display);
+  }
+
+  .font-ibm-plex-mono {
+    font-family: var(--mg-font-mono);
+    font-weight: var(--mg-weight-light);
+  }
+  
+  /* ============================================
+     MICROGRAPHICS UTILITIES - Use these classes
+     ============================================ */
+  
+  /* Text utilities */
+  .mg-text {
+    font-family: var(--mg-font-sans);
+    font-weight: var(--mg-weight-regular);
+    color: var(--mg-text-primary);
+  }
+  
+  .mg-text-xs {
+    font-size: var(--mg-text-xs);
+    letter-spacing: var(--mg-tracking-wide);
+    text-transform: uppercase;
+  }
+  
+  .mg-text-sm {
+    font-size: var(--mg-text-sm);
+  }
+  
+  .mg-text-base {
+    font-size: var(--mg-text-base);
+  }
+  
+  .mg-text-lg {
+    font-size: var(--mg-text-lg);
+    font-weight: var(--mg-weight-medium);
+  }
+  
+  .mg-text-display {
+    font-family: var(--mg-font-display);
+    font-size: var(--mg-text-2xl);
+    font-weight: 400;
+    letter-spacing: var(--mg-tracking-tight);
+  }
+  
+  .mg-text-hero {
+    font-family: var(--mg-font-display);
+    font-size: var(--mg-text-3xl);
+    font-weight: 400;
+    letter-spacing: var(--mg-tracking-tight);
+  }
+  
+  .mg-text-primary { color: var(--mg-text-primary); }
+  .mg-text-secondary { color: var(--mg-text-secondary); }
+  .mg-text-muted { color: var(--mg-text-muted); }
+  
+  /* Nav specific */
+  .mg-nav-item {
+    font-size: var(--mg-text-sm);
+    font-weight: var(--mg-weight-light);
+    color: var(--mg-nav-text-muted);
+    transition: color 0.15s ease;
+  }
+  
+  .mg-nav-item:hover {
+    color: var(--mg-nav-text);
+  }
+  
+  .mg-nav-item.active {
+    color: var(--mg-nav-text-active);
+    font-weight: var(--mg-weight-medium);
+  }
+  
+  .mg-nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--mg-nav-indicator-size);
+    height: var(--mg-nav-indicator-size);
+    border-radius: 50%;
+    background: var(--mg-nav-indicator);
   }
 }
 

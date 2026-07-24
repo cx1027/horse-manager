@@ -3,7 +3,7 @@
 import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "ghost" | "outline" | "danger" | "gradient";
+  variant?: "primary" | "secondary" | "ghost" | "outline" | "danger" | "gradient" | "micrographics";
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
   circle?: boolean;
@@ -14,6 +14,41 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className = "", variant = "primary", size = "md", isLoading, disabled, circle, leftIcon, rightIcon, children, ...props }, ref) => {
     const baseStyles = "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent/30 disabled:opacity-50 disabled:cursor-not-allowed";
+
+    // Micrographics variant - ultra minimal
+    if (variant === 'micrographics') {
+      const sizes = {
+        sm: "px-3 py-1.5 text-xs rounded",
+        md: "px-4 py-2 text-xs rounded",
+        lg: "px-5 py-2.5 text-sm rounded",
+      };
+      
+      return (
+        <button
+          ref={ref}
+          className={`${sizes[size]} ${className}`}
+          style={{
+            background: 'transparent',
+            border: '1px solid var(--mg-border)',
+            color: 'var(--mg-text-secondary)',
+            fontFamily: 'var(--mg-font-sans)',
+            fontWeight: 400,
+          }}
+          disabled={disabled || isLoading}
+          {...props}
+        >
+          {isLoading ? (
+            <span className="opacity-50">...</span>
+          ) : (
+            <>
+              {leftIcon}
+              {children}
+              {rightIcon}
+            </>
+          )}
+        </button>
+      );
+    }
 
     const variants = {
       primary: "text-white shadow-button",

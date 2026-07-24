@@ -24,6 +24,7 @@ interface SidebarProps {
   isCollapsed?: boolean;
   onToggle?: () => void;
   className?: string;
+  variant?: 'default' | 'micrographics';
 }
 
 interface User {
@@ -56,17 +57,18 @@ const menuConfig = {
   ],
 };
 
-const roleLabels = {
-  user: 'User',
-  investor: 'Investor',
-  staff: 'Staff',
-};
-
-const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle, className = "" }) => {
+const Sidebar: React.FC<SidebarProps> = ({ 
+  isCollapsed = false, 
+  onToggle, 
+  className = "",
+  variant = 'default'
+}) => {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const isMicrographics = variant === 'micrographics';
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -86,6 +88,147 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle, classN
     router.push('/login');
   };
 
+  if (isMicrographics) {
+    // Micrographics: Ultra-light, minimal sidebar
+    return (
+      <aside
+        className={cn(
+          'hidden lg:flex flex-col fixed left-0 top-0 h-screen transition-all duration-300 z-50',
+          isCollapsed ? 'w-16' : 'w-56',
+          className
+        )}
+        style={{
+          background: 'transparent',
+          borderRight: '1px solid var(--mg-border-subtle)',
+        }}
+      >
+        {/* Logo */}
+        <div 
+          className="h-14 flex items-center justify-center border-b"
+          style={{ borderColor: 'var(--mg-border-subtle)' }}
+        >
+          {!isCollapsed ? (
+            <Link href="/dashboard" className="flex items-center gap-2">
+              <span 
+                className="text-base font-light tracking-tight"
+                style={{ 
+                  fontFamily: 'var(--mg-font-sans)',
+                  color: 'var(--mg-text-primary)'
+                }}
+              >
+                HorseInfo
+              </span>
+            </Link>
+          ) : (
+            <div className="w-6 h-6 rounded-full" style={{ background: 'var(--mg-text-muted)' }} />
+          )}
+        </div>
+
+        {/* Main Navigation - Minimal */}
+        <nav className="flex-1 p-4 space-y-1">
+          {menuItems.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                className="relative flex items-center gap-3 px-3 py-2 rounded-lg transition-colors"
+                style={{
+                  background: isActive ? 'var(--mg-nav-bg-active)' : 'transparent',
+                  color: isActive ? 'var(--mg-nav-text-active)' : 'var(--mg-nav-text-muted)',
+                }}
+                title={isCollapsed ? item.label : undefined}
+              >
+                <item.icon 
+                  className="w-4 h-4 flex-shrink-0" 
+                />
+                {!isCollapsed && (
+                  <span 
+                    className="text-xs font-light tracking-wide"
+                    style={{ 
+                      fontFamily: 'var(--mg-font-sans)',
+                      fontWeight: isActive ? 400 : 300
+                    }}
+                  >
+                    {item.label}
+                  </span>
+                )}
+                {/* Active dot indicator */}
+                {isActive && (
+                  <span 
+                    className="absolute right-2 w-1 h-1 rounded-full"
+                    style={{ 
+                      background: 'var(--mg-nav-indicator)',
+                      display: isCollapsed ? 'none' : 'block'
+                    }}
+                  />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Bottom Navigation - Minimal */}
+        <div className="p-4 border-t space-y-1" style={{ borderColor: 'var(--mg-border-subtle)' }}>
+          <Link
+            href="/settings"
+            className="relative flex items-center gap-3 px-3 py-2 rounded-lg transition-colors"
+            style={{ 
+              background: pathname === '/settings' ? 'var(--mg-nav-bg-active)' : 'transparent',
+              color: pathname === '/settings' ? 'var(--mg-nav-text-active)' : 'var(--mg-nav-text-muted)',
+            }}
+            title={isCollapsed ? 'Settings' : undefined}
+          >
+            <Settings className="w-4 h-4 flex-shrink-0" />
+            {!isCollapsed && (
+              <span 
+                className="text-xs font-light tracking-wide"
+                style={{ fontFamily: 'var(--mg-font-sans)' }}
+              >
+                Settings
+              </span>
+            )}
+          </Link>
+
+          {/* Collapse Toggle */}
+          <button
+            onClick={onToggle}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors"
+            style={{ color: 'var(--mg-text-muted)' }}
+          >
+            {isCollapsed ? (
+              <ChevronRight className="w-4 h-4 flex-shrink-0" />
+            ) : (
+              <>
+                <ChevronLeft className="w-4 h-4 flex-shrink-0" />
+                <span className="text-xs font-light" style={{ fontFamily: 'var(--mg-font-sans)' }}>
+                  Collapse
+                </span>
+              </>
+            )}
+          </button>
+
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors"
+            style={{ color: 'var(--mg-text-muted)' }}
+            title={isCollapsed ? 'Logout' : undefined}
+          >
+            <LogOut className={cn('w-4 h-4 flex-shrink-0', isLoggingOut && 'animate-pulse')} />
+            {!isCollapsed && (
+              <span className="text-xs font-light" style={{ fontFamily: 'var(--mg-font-sans)' }}>
+                {isLoggingOut ? 'Logging out...' : 'Logout'}
+              </span>
+            )}
+          </button>
+        </div>
+      </aside>
+    );
+  }
+
+  // Default dark theme
   return (
     <aside
       className={cn(
@@ -99,7 +242,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle, classN
       }}
     >
       {/* Logo */}
-      <div className="h-16 flex items-center justify-center border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+      <div 
+        className="h-16 flex items-center justify-center border-b"
+        style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+      >
         {!isCollapsed ? (
           <Link href="/dashboard" className="flex items-center gap-2">
             <div
@@ -113,20 +259,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle, classN
                 <path d="M12 2C8.5 2 6 5 6 8c0 2 1 3 2 4l-1 8h10l-1-8c1-1 2-2 2-4 0-3-2.5-6-6-6zm0 2c2.5 0 4 2 4 4s-1.5 3-4 3-4-1-4-3 1.5-4 4-4z"/>
               </svg>
             </div>
-            <div>
-              <span className="text-lg font-bold" style={{ color: '#FFFFFF' }}>HorseInfo</span>
-              {user?.role && (
-                <span
-                  className="ml-2 text-xs px-2 py-0.5 rounded-full"
-                  style={{
-                    background: 'rgba(225, 46, 109, 0.15)',
-                    color: '#E12E6D'
-                  }}
-                >
-                  {roleLabels[userRole] || 'User'}
-                </span>
-              )}
-            </div>
+            <span className="text-lg font-bold font-42dot-sans text-white">
+              HorseInfo
+            </span>
           </Link>
         ) : (
           <div
@@ -142,12 +277,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle, classN
 
       {/* Main Navigation */}
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-        <p
-          className="px-3 py-2 text-xs font-semibold uppercase tracking-wider"
-          style={{ color: '#6B6B6B' }}
-        >
-          {!isCollapsed && 'Menu'}
-        </p>
+        {!isCollapsed && (
+          <p
+            className="px-3 py-2 text-xs font-semibold uppercase tracking-wider font-42dot-sans"
+            style={{ color: '#A0A0A0' }}
+          >
+            Menu
+          </p>
+        )}
         {menuItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
@@ -158,16 +295,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle, classN
                 'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200',
                 isActive
                   ? 'text-white'
-                  : 'text-[#A0A0A0] hover:text-white hover:bg-[#2A2A2A]'
+                  : 'hover:bg-[#2A2A2A]'
               )}
               style={isActive ? {
                 background: 'linear-gradient(135deg, #E12E6D, #A855F7)',
                 boxShadow: '0 2px 8px rgba(225, 46, 109, 0.3)'
-              } : undefined}
+              } : {
+                color: '#A0A0A0'
+              }}
               title={isCollapsed ? item.label : undefined}
             >
               <item.icon className="w-5 h-5 flex-shrink-0" />
-              {!isCollapsed && <span className="text-sm font-medium">{item.label}</span>}
+              {!isCollapsed && (
+                <span className="text-sm font-medium font-42dot-sans">
+                  {item.label}
+                </span>
+              )}
             </Link>
           );
         })}
@@ -175,52 +318,53 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false, onToggle, classN
 
       {/* Bottom Navigation */}
       <div className="p-3 border-t space-y-1" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
-        {/* Settings - visible to all */}
         <Link
           href="/settings"
           className={cn(
             'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors',
             pathname === '/settings'
               ? 'text-white'
-              : 'text-[#A0A0A0] hover:text-white hover:bg-[#2A2A2A]'
+              : 'hover:bg-[#2A2A2A]'
           )}
-          style={pathname === '/settings' ? { background: 'linear-gradient(135deg, #E12E6D, #A855F7)' } : undefined}
+          style={pathname === '/settings' ? { 
+            background: 'linear-gradient(135deg, #E12E6D, #A855F7)'
+          } : { color: '#A0A0A0' }}
           title={isCollapsed ? 'Settings' : undefined}
         >
           <Settings className="w-5 h-5 flex-shrink-0" />
-          {!isCollapsed && <span className="text-sm font-medium">Settings</span>}
+          {!isCollapsed && (
+            <span className="text-sm font-medium font-42dot-sans">Settings</span>
+          )}
         </Link>
 
-        {/* Collapse Toggle */}
         <button
           onClick={onToggle}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#A0A0A0] hover:text-white hover:bg-[#2A2A2A] transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors"
+          style={{ color: '#A0A0A0' }}
         >
           {isCollapsed ? (
             <ChevronRight className="w-5 h-5 flex-shrink-0" />
           ) : (
             <>
               <ChevronLeft className="w-5 h-5 flex-shrink-0" />
-              <span className="text-sm font-medium">Collapse</span>
+              <span className="text-sm font-medium font-42dot-sans">Collapse</span>
             </>
           )}
         </button>
 
-        {/* Logout Button - Always visible */}
         <button
           onClick={handleLogout}
           disabled={isLoggingOut}
           className={cn(
             'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200',
-            isLoggingOut
-              ? 'text-[#A0A0A0] cursor-not-allowed'
-              : 'text-[#EF4444] hover:text-white hover:bg-[rgba(239,68,68,0.15)]'
+            isLoggingOut ? 'cursor-not-allowed' : 'hover:bg-[rgba(239,68,68,0.15)]'
           )}
+          style={{ color: '#EF4444' }}
           title={isCollapsed ? 'Logout' : undefined}
         >
           <LogOut className={cn('w-5 h-5 flex-shrink-0', isLoggingOut && 'animate-pulse')} />
           {!isCollapsed && (
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium font-42dot-sans">
               {isLoggingOut ? 'Logging out...' : 'Logout'}
             </span>
           )}

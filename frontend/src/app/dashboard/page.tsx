@@ -90,9 +90,9 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <Layout user={user}>
+      <Layout user={user} variant="micrographics">
         <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#E12E6D' }} />
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--mg-text-muted)' }} />
         </div>
       </Layout>
     );
@@ -103,112 +103,152 @@ export default function DashboardPage() {
   }
 
   return (
-    <Layout user={user}>
-      <div className="min-h-screen" style={{ background: '#0A0A0A' }}>
-        {/* Status Bar Spacer - Mobile only */}
-        <div className="h-11 lg:hidden" />
+    <Layout user={user} variant="micrographics">
+      {/* Layer #23 Background Container */}
+      <div className="min-h-screen relative" style={{ background: '#FFFFFF' }}>
+        {/* Paper Background - Layer #23 style */}
+        <div 
+          className="fixed inset-0 pointer-events-none"
+          style={{ zIndex: 0 }}
+        >
+          {/* Paper texture with 58% opacity as per Figma */}
+          <Image
+            src="/images/layer23-paper.webp"
+            alt=""
+            fill
+            className="object-cover object-center"
+            style={{ opacity: 0.58 }}
+            unoptimized
+          />
+        </div>
 
-        {/* Header */}
-        <header className="sticky top-0 z-40 px-4 py-3 flex items-center justify-between" style={{ background: 'rgba(10, 10, 10, 0.9)', backdropFilter: 'blur(12px)' }}>
-          <div className="flex items-center gap-3">
-            {/* Logo */}
-            <div className="relative w-10 h-8">
-              <Image
-                src="/images/background.webp"
-                alt=""
-                fill
-                className="object-contain"
-                unoptimized
-              />
+        {/* Main Content - Above the background */}
+        <div className="relative" style={{ zIndex: 1 }}>
+          {/* Status Bar Spacer - Mobile only */}
+          <div className="h-14 lg:hidden" />
+
+          {/* Page Content */}
+          <main className="px-4 pb-20 lg:pb-8 lg:pl-0">
+            {/* Greeting - Layer #23 Typography - Serif for elegance */}
+            <div className="pt-6 pb-8">
+              <h1 
+                className="font-instrument-serif text-2xl lg:text-3xl tracking-tight"
+                style={{ color: 'var(--mg-text-primary)' }}
+              >
+                {getGreeting()}, {displayName}
+              </h1>
+              <p 
+                className="text-xs font-light mt-3 tracking-wide uppercase"
+                style={{ 
+                  fontFamily: 'var(--mg-font-sans)',
+                  color: 'var(--mg-text-muted)'
+                }}
+              >
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+              </p>
             </div>
-            <span className="font-semibold" style={{ color: '#FFFFFF' }}>HorseInfo</span>
-          </div>
 
-          {/* User Avatar */}
-          <Link href="/profile" className="flex items-center gap-2">
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold"
-              style={{ background: 'linear-gradient(135deg, #E12E6D, #A855F7)', color: '#FFFFFF' }}
-            >
-              {displayName.charAt(0).toUpperCase()}
+            {/* My Barn Section */}
+            <div className="flex items-center justify-between mb-4">
+              <h2 
+                className="text-sm font-light tracking-wide"
+                style={{ 
+                  fontFamily: 'var(--mg-font-sans)',
+                  color: 'var(--mg-text-secondary)'
+                }}
+              >
+                My Barn
+              </h2>
+              <Link 
+                href="/horses" 
+                className="text-xs font-light"
+                style={{ 
+                  fontFamily: 'var(--mg-font-sans)',
+                  color: 'var(--mg-text-muted)'
+                }}
+              >
+                See all
+              </Link>
             </div>
-          </Link>
-        </header>
 
-        {/* Main Content */}
-        <main className="px-4 pb-24">
-          {/* Greeting */}
-          <div className="py-6">
-            <h1 className="text-2xl font-semibold" style={{ color: '#FFFFFF' }}>
-              {getGreeting()}, {displayName}
-            </h1>
-            <p className="text-sm mt-1" style={{ color: '#6B7280' }}>
-              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-            </p>
-          </div>
-
-          {/* My Barn Section */}
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold" style={{ color: '#FFFFFF' }}>My Barn</h2>
-            <Link href="/horses" className="text-sm font-medium" style={{ color: '#E12E6D' }}>
-              See all
-            </Link>
-          </div>
-
-          {/* Horse Cards Grid - 2 columns */}
-          <div className="grid grid-cols-2 gap-3">
-            {horses.slice(0, 6).map((horse) => (
-              <Link key={horse.id} href={`/horses/${horse.documentId || horse.id}`}>
-                <Card
-                  padding="sm"
-                  className="h-full"
-                  style={{ background: '#1A1A1A' }}
-                >
-                  {/* Horse Image/Icon */}
-                  <div
-                    className="w-full aspect-square rounded-lg mb-3 flex items-center justify-center"
-                    style={{ background: 'rgba(225, 46, 109, 0.1)' }}
+            {/* Horse Cards Grid - 2 columns */}
+            <div className="grid grid-cols-2 gap-3">
+              {horses.slice(0, 6).map((horse) => (
+                <Link key={horse.id} href={`/horses/${horse.documentId || horse.id}`}>
+                  <Card
+                    variant="micrographics"
+                    padding="sm"
+                    className="h-full"
                   >
-                    <HorseIcon className="w-10 h-10" style={{ color: 'rgba(225, 46, 109, 0.6)' }} />
-                  </div>
-
-                  {/* Horse Info */}
-                  <div>
-                    <h3 className="font-medium text-sm truncate" style={{ color: '#FFFFFF' }}>
-                      {horse.name}
-                    </h3>
-                    <p className="text-xs truncate mt-0.5" style={{ color: '#6B7280' }}>
-                      {horse.breed || 'Unknown breed'}
-                    </p>
-                    <Badge
-                      variant={horse.status === 'active' ? 'success' : 'secondary'}
-                      className="mt-2 text-xs"
+                    {/* Horse Image/Icon */}
+                    <div
+                      className="w-full aspect-square rounded-lg mb-3 flex items-center justify-center"
+                      style={{ background: 'var(--mg-bg-paper)' }}
                     >
-                      {horse.status === 'active' ? 'Active' : 'Inactive'}
-                    </Badge>
+                      <HorseIcon 
+                        className="w-8 h-8" 
+                        style={{ color: 'var(--mg-text-muted)' }} 
+                      />
+                    </div>
+
+                    {/* Horse Info */}
+                    <div>
+                      <h3 
+                        className="text-sm font-light truncate"
+                        style={{ 
+                          fontFamily: 'var(--mg-font-sans)',
+                          color: 'var(--mg-text-primary)'
+                        }}
+                      >
+                        {horse.name}
+                      </h3>
+                      <p 
+                        className="text-[11px] font-light truncate mt-0.5"
+                        style={{ 
+                          fontFamily: 'var(--mg-font-sans)',
+                          color: 'var(--mg-text-muted)'
+                        }}
+                      >
+                        {horse.breed || 'Unknown breed'}
+                      </p>
+                      <Badge
+                        variant="micrographics"
+                        className="mt-2"
+                      >
+                        {horse.status === 'active' ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </div>
+                  </Card>
+                </Link>
+              ))}
+
+              {/* Add New Horse Card */}
+              <Link href="/horses/new">
+                <Card
+                  variant="micrographics"
+                  padding="sm"
+                  className="h-full min-h-[180px] flex flex-col items-center justify-center"
+                >
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
+                    style={{ background: 'var(--mg-bg-paper)' }}
+                  >
+                    <Plus className="w-5 h-5" style={{ color: 'var(--mg-text-muted)' }} />
                   </div>
+                  <span 
+                    className="text-xs font-light"
+                    style={{ 
+                      fontFamily: 'var(--mg-font-sans)',
+                      color: 'var(--mg-text-muted)'
+                    }}
+                  >
+                    Add Horse
+                  </span>
                 </Card>
               </Link>
-            ))}
-
-            {/* Add New Horse Card */}
-            <Link href="/horses/new">
-              <Card
-                padding="sm"
-                className="h-full min-h-[200px] flex flex-col items-center justify-center"
-                style={{ background: 'transparent', border: '1px dashed #374151' }}
-              >
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2"
-                  style={{ background: 'rgba(225, 46, 109, 0.1)' }}
-                >
-                  <Plus className="w-6 h-6" style={{ color: '#E12E6D' }} />
-                </div>
-                <span className="text-sm" style={{ color: '#6B7280' }}>Add Horse</span>
-              </Card>
-            </Link>
-          </div>
-        </main>
+            </div>
+          </main>
+        </div>
       </div>
     </Layout>
   );

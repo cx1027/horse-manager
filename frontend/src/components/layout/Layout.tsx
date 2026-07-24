@@ -14,11 +14,14 @@ interface LayoutProps {
     email?: string;
     avatar?: string | null;
   } | null;
+  variant?: 'default' | 'micrographics';
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, user }) => {
+const Layout: React.FC<LayoutProps> = ({ children, user, variant = 'default' }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+
+  const isMicrographics = variant === 'micrographics';
 
   return (
     <div className="min-h-screen">
@@ -27,25 +30,30 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
         user={user}
         onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         isMenuOpen={isMobileMenuOpen}
+        variant={variant}
       />
 
       {/* Desktop Sidebar */}
       <Sidebar
         isCollapsed={isSidebarCollapsed}
         onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        variant={variant}
       />
 
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <>
           <div
-            className="fixed inset-0 backdrop-blur-sm z-40 lg:hidden"
-            style={{ background: 'rgba(0,0,0,0.6)' }}
+            className={cn(
+              'fixed inset-0 z-40 lg:hidden transition-all duration-300 backdrop-blur-sm'
+            )}
+            style={{ background: isMicrographics ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.6)' }}
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <Sidebar
             isCollapsed={false}
             className="fixed left-0 top-0 h-full z-50 lg:hidden"
+            variant={variant}
           />
         </>
       )}
@@ -54,15 +62,15 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
       <main
         className={cn(
           'min-h-screen transition-all duration-300',
-          'pt-16 pb-20 lg:pt-0 lg:pb-0',
-          isSidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64'
+          isMicrographics ? '' : 'pt-16 pb-20 lg:pt-0 lg:pb-0',
+          isSidebarCollapsed ? 'lg:pl-16' : 'lg:pl-56'
         )}
       >
-        <div className="page-container py-6">{children}</div>
+        <div className={cn("page-container", isMicrographics ? 'py-0' : 'py-6')}>{children}</div>
       </main>
 
       {/* Bottom Navigation (Mobile) */}
-      <BottomNav />
+      <BottomNav variant={variant} />
     </div>
   );
 };
