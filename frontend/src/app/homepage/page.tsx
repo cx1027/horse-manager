@@ -39,7 +39,7 @@ export default function HomepagePage() {
       >
         {/* Register Button */}
         <Link
-          href="http://localhost:3001/register"
+          href="/auth/register"
           target="_blank"
           rel="noopener noreferrer"
           className="px-5 py-2.5 text-xs font-semibold rounded-xl transition-all hover:scale-[1.02]"
@@ -56,7 +56,7 @@ export default function HomepagePage() {
         
         {/* Login Button */}
         <Link
-          href="http://localhost:3001/login"
+          href="/auth/login"
           target="_blank"
           rel="noopener noreferrer"
           className="px-5 py-2.5 text-xs font-semibold rounded-xl transition-all hover:scale-[1.02]"
